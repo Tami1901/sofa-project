@@ -1,17 +1,24 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Input, Button, Stack } from "@chakra-ui/core";
+import { Stack, Heading } from "@chakra-ui/core";
+import { useSelector } from "react-redux";
+import { AppStoreState } from "../lib/reducer";
 
 const Home: React.FC = () => {
-  const [count, setCount] = React.useState(0);
+  const { username, loggedIn } = useSelector((store: AppStoreState) => ({
+    loggedIn: store.login.loggedIn,
+    username: store.login.username
+  }));
 
   return (
     <Stack>
-      <Link to="/page">Page</Link>
-      <br />
-      <i className="material-icons">delete</i>
-      <Button onClick={(): void => setCount((v) => v + 1)}>This is a button: {count}</Button>
-      <Input />
+      {loggedIn ? (
+        <Heading>Hello {username}</Heading>
+      ) : (
+        <Link to="/login">
+          <Heading>Go to Login</Heading>
+        </Link>
+      )}
     </Stack>
   );
 };

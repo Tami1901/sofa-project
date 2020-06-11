@@ -9,7 +9,7 @@ import {
   Checkbox,
   Text
 } from "@chakra-ui/core";
-import { useHistory } from "react-router";
+import { useHistory, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import styled from "@emotion/styled";
 
@@ -19,9 +19,13 @@ import { AppStoreState } from "../lib/reducer";
 
 const Container = styled.div`
   background-color: rgb(248, 136, 61);
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
   width: 500px;
   height: 500px;
-  margin: 12vh auto 0;
 
   border-radius: 50%;
 
@@ -142,10 +146,7 @@ const Login: React.FC = () => {
             </Button>
           </div>
           <Text className="text">
-            You don&rsquo;t have an account? Register{" "}
-            {/* <Link as={RouterLink} to="/register">
-              here
-            </Link> */}
+            You don't have an account? Register <Link to="/register">here</Link>
           </Text>
         </form>
       </div>

@@ -1,18 +1,69 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Input, Button, Stack } from "@chakra-ui/core";
+import { Stack, Heading, Text, Image, Button } from "@chakra-ui/core";
+import { useSelector } from "react-redux";
+import { AppStoreState } from "../lib/reducer";
+import styled from "@emotion/styled";
+
+const Container = styled.div`
+  position: relative;
+  text-align: center;
+  color: white;
+  height: 100vh;
+  .court {
+    width: 100%;
+    height: 100%;
+  }
+  .title {
+    position: absolute;
+    top: 12%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .button {
+    background-color: #ffe900;
+    color: black;
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 15em;
+    height: 5em;
+    font-size: 20px;
+  }
+`;
 
 const Home: React.FC = () => {
-  const [count, setCount] = React.useState(0);
+  const { username, loggedIn } = useSelector((store: AppStoreState) => ({
+    //useSelector se koristi za uzimanje podataka iz stora
+    loggedIn: store.login.loggedIn, //uzme jel logiran i username
+    username: store.login.username
+  }));
 
   return (
-    <Stack>
-      <Link to="/page">Page</Link>
-      <br />
-      <i className="material-icons">delete</i>
-      <Button onClick={(): void => setCount((v) => v + 1)}>This is a button: {count}</Button>
-      <Input />
-    </Stack>
+    <Container>
+      <Text
+        fontSize="5em"
+        color="blue"
+        className="title"
+        textAlign="center"
+        paddingTop="95px"
+        fontFamily="'Bebas Neue', cursive;"
+      >
+        Tennis league
+      </Text>
+      <Image
+        size="200px"
+        src="https://wallpapercrafter.com/uploads/posts/39360-the-view-of-a-white-tennis-line-markings-on-a-tennis-court___tennis-line-markings.jpg"
+        alt="tennis court"
+        className="court"
+      />
+      <Button variant="solid" className="button" fontFamily="'Bebas Neue', cursive;">
+        <Link to="/login" className="linkto">
+          Login in
+        </Link>
+      </Button>
+    </Container>
   );
 };
 

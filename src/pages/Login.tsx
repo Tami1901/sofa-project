@@ -7,16 +7,15 @@ import {
   Icon,
   InputRightElement,
   Checkbox,
-  Link,
   Text
 } from "@chakra-ui/core";
 import { useHistory } from "react-router";
 import { useSelector } from "react-redux";
+import styled from "@emotion/styled";
 
 import { loginAction } from "../reducers/actions";
 import useThunkDispatch from "../hooks/useThunkDispatch";
 import { AppStoreState } from "../lib/reducer";
-import styled from "@emotion/styled";
 
 const Container = styled.div`
   background-color: rgb(248, 136, 61);
@@ -58,8 +57,8 @@ const Login: React.FC = () => {
 
   const dispatch = useThunkDispatch();
   const { error, loading } = useSelector((store: AppStoreState) => ({
-    //spremljeni su u storu error i loading
-    //store je uvijek AppStoreState i onda se lijepo reci i ponudit ti
+    // spremljeni su u storu error i loading
+    // store je uvijek AppStoreState i onda se lijepo reci i ponudit ti
     error: store.login.error,
     loading: store.login.loading
   }));
@@ -75,7 +74,7 @@ const Login: React.FC = () => {
   };
 
   const [show, setShow] = React.useState(false);
-  const handleClick = () => setShow(!show);
+  const handleClick = (): void => setShow(!show);
 
   return (
     <Container>
@@ -143,7 +142,7 @@ const Login: React.FC = () => {
             </Button>
           </div>
           <Text className="text">
-            You don't have an account? Register{" "}
+            You don&rsquo;t have an account? Register{" "}
             {/* <Link as={RouterLink} to="/register">
               here
             </Link> */}

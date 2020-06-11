@@ -65,6 +65,7 @@ module.exports = {
     "prettier/prettier": "error",
     "react/jsx-filename-extension": 0,
     "react/jsx-props-no-spreading": 0,
+    "react/no-children-prop": 0,
     "spaced-comment": ["error", "always", { markers: ["/"] }]
   },
   // overrides: [

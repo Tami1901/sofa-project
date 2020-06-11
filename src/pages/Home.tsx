@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { Stack, Heading, Text, Image, Button } from "@chakra-ui/core";
 import { useSelector } from "react-redux";
 import { AppStoreState } from "../lib/reducer";
@@ -40,6 +40,8 @@ const Home: React.FC = () => {
     username: store.login.username
   }));
 
+  const history = useHistory();
+
   return (
     <Container>
       <Text
@@ -58,10 +60,13 @@ const Home: React.FC = () => {
         alt="tennis court"
         className="court"
       />
-      <Button variant="solid" className="button" fontFamily="'Bebas Neue', cursive;">
-        <Link to="/login" className="linkto">
-          Login in
-        </Link>
+      <Button
+        variant="solid"
+        className="button"
+        onClick={() => history.push("/login")}
+        fontFamily="'Bebas Neue', cursive;"
+      >
+        Login in
       </Button>
     </Container>
   );

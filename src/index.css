@@ -9,7 +9,7 @@ body,
 
 /* Fonts */
 @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,700&display=swap");
-
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
 * {
   font-family: "Roboto", sans-serif;
   font-weight: 400;

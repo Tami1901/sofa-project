@@ -1,25 +1,70 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Stack, Heading } from "@chakra-ui/core";
+import { Text, Image, Button } from "@chakra-ui/core";
 import { useSelector } from "react-redux";
+import styled from "@emotion/styled";
+
 import { AppStoreState } from "../lib/reducer";
+
+const Container = styled.div`
+  position: relative;
+  text-align: center;
+  color: white;
+  height: 100vh;
+  .court {
+    width: 100%;
+    height: 100%;
+  }
+  .title {
+    position: absolute;
+    top: 12%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .button {
+    background-color: #ffe900;
+    color: black;
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 15em;
+    height: 5em;
+    font-size: 20px;
+  }
+`;
 
 const Home: React.FC = () => {
   const { username, loggedIn } = useSelector((store: AppStoreState) => ({
-    loggedIn: store.login.loggedIn,
+    // useSelector se koristi za uzimanje podataka iz stora
+    loggedIn: store.login.loggedIn, // uzme jel logiran i username
     username: store.login.username
   }));
 
   return (
-    <Stack>
-      {loggedIn ? (
-        <Heading>Hello {username}</Heading>
-      ) : (
-        <Link to="/login">
-          <Heading>Go to Login</Heading>
+    <Container>
+      <Text
+        fontSize="5em"
+        color="blue"
+        className="title"
+        textAlign="center"
+        paddingTop="95px"
+        fontFamily="'Bebas Neue', cursive;"
+      >
+        Tennis league
+      </Text>
+      <Image
+        size="200px"
+        src="https://wallpapercrafter.com/uploads/posts/39360-the-view-of-a-white-tennis-line-markings-on-a-tennis-court___tennis-line-markings.jpg"
+        alt="tennis court"
+        className="court"
+      />
+      <Button variant="solid" className="button" fontFamily="'Bebas Neue', cursive;">
+        <Link to="/login" className="linkto">
+          Login in
         </Link>
-      )}
-    </Stack>
+      </Button>
+    </Container>
   );
 };
 

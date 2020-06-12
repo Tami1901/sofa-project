@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Input,
   Button,
@@ -12,8 +12,9 @@ import {
 import { useHistory, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import styled from "@emotion/styled";
+import { useForm } from "react-hook-form";
 
-import { loginAction } from "../reducers/actions";
+import { loginAction, LoginClear } from "../reducers/actions";
 import useThunkDispatch from "../hooks/useThunkDispatch";
 import { AppStoreState } from "../lib/reducer";
 
@@ -67,10 +68,13 @@ const Login: React.FC = () => {
     loading: store.login.loading
   }));
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
+  useEffect(() => {
+    dispatch(LoginClear());
+  }, []);
 
-    dispatch(loginAction(username, password)).then((ok) => {
+  const { register, handleSubmit } = useForm();
+  const onSubmit = (data) => {
+    dispatch(loginAction(data.username, data.password)).then((ok) => {
       if (ok) {
         history.push("/");
       }
@@ -88,14 +92,18 @@ const Login: React.FC = () => {
           color="blue"
           className="title"
           textAlign="center"
-          paddingTop="15%"
+          paddingTop="1em"
           fontFamily="'Bebas Neue', cursive;"
         >
           Tennis league
         </Text>
         <br />
 
-        <form className="middle" onSubmit={onSubmit}>
+        <Text textAlign="center" mb="1em" mt={error ? 0 : "1em"}>
+          {error}
+        </Text>
+
+        <form className="middle" onSubmit={handleSubmit(onSubmit)}>
           {" "}
           <InputGroup>
             <InputLeftElement children={<Icon name="email" color="gray.300" />} />
@@ -104,10 +112,11 @@ const Login: React.FC = () => {
               name="username"
               placeholder="email"
               className="input"
-              value={username}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-                setUsername(e.target.value)
-              }
+              // value={username}
+              // onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
+              //   setUsername(e.target.value)
+              // }
+              ref={register}
             />
           </InputGroup>
           <br />
@@ -119,10 +128,11 @@ const Login: React.FC = () => {
               placeholder="Enter password"
               name="password"
               className="input"
-              value={password}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-                setPassword(e.target.value)
-              }
+              // value={password}
+              // onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
+              //   setPassword(e.target.value)
+              // }
+              ref={register}
             />
             <InputRightElement width="4.5rem">
               <Button h="1.75rem" size="sm" onClick={handleClick}>
@@ -141,7 +151,7 @@ const Login: React.FC = () => {
             Keep me logged in
           </Checkbox>
           <div className="login">
-            <Button variantColor="green" size="lg" className="loginbutton">
+            <Button variantColor="green" type="submit" size="lg" className="loginbutton">
               Log in
             </Button>
           </div>

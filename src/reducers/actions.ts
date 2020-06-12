@@ -5,6 +5,7 @@ import { AppStoreState } from "../lib/reducer";
 export const LOGIN_START = "LOGIN_START";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_FAIL = "LOGIN_FAIL";
+export const LOGIN_CLEAR = "LOGIN_CLEAR";
 
 interface UserStore {
   loading: boolean;
@@ -35,7 +36,11 @@ interface IUserLoginFail {
   };
 }
 
-export type IUserLogin = IUserLoginStart | IUserLoginSuccess | IUserLoginFail;
+interface IUserLoginClear {
+  type: typeof LOGIN_CLEAR;
+}
+
+export type IUserLogin = IUserLoginStart | IUserLoginSuccess | IUserLoginFail | IUserLoginClear;
 type ThunkResult<R> = ThunkAction<R, AppStoreState, null, IUserLogin>;
 
 const initState: UserStore = { loading: false, loggedIn: false };
@@ -62,6 +67,10 @@ const reducer = (state = initState, action: IUserLogin): UserStore => {
         loading: false,
         loggedIn: false,
         error: action.payload.error
+      };
+    case LOGIN_CLEAR:
+      return {
+        ...initState
       };
     default:
       return state;
@@ -92,6 +101,11 @@ const LoginFail = (error: string): IUserLoginFail => {
     payload: {
       error
     }
+  };
+};
+const LoginClear = (): IUserLoginClear => {
+  return {
+    type: LOGIN_CLEAR
   };
 };
 
@@ -130,4 +144,4 @@ const loginAction: ActionCreator<ThunkResult<Promise<boolean>>> = (
   }
 };
 
-export { reducer, loginAction };
+export { reducer, loginAction, LoginClear };

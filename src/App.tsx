@@ -14,6 +14,7 @@ import Leagues from "./pages/Leagues";
 import { AppStoreState } from "./lib/reducer";
 import LeaguesNew from "./pages/LeaguesNew";
 import League from "./pages/League";
+import EventNew from "./pages/EventNew";
 
 const PrivateRoute: React.FC<RouteProps> = (props) => {
   const location = useLocation();
@@ -43,6 +44,7 @@ const App: React.FC = () => {
       <CSSReset />
       <BrowserRouter>
         <Switch>
+          <PrivateRoute path="/leagues/:id/new-event" component={EventNew} />
           <PrivateRoute path="/leagues/new" component={LeaguesNew} exact />
           <PrivateRoute path="/leagues/:id" component={League} />
           <PrivateRoute path="/leagues" component={Leagues} exact />

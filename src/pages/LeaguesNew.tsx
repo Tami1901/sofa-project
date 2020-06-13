@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 
 import useThunkDispatch from "../hooks/useThunkDispatch";
-import { createLeague } from "../reducers/actionsLeagues";
+import { createLeague } from "../reducers/leagues";
 import { AppStoreState } from "../lib/reducer";
 
 export interface NewLeagueData {

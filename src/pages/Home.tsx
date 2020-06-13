@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { Text, Image, Button } from "@chakra-ui/core";
 import { useSelector } from "react-redux";
 import styled from "@emotion/styled";

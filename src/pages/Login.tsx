@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 import styled from "@emotion/styled";
 import { useForm } from "react-hook-form";
 
-import { loginAction, LoginInit } from "../reducers/actions";
+import { loginAction, LoginInit } from "../reducers/login";
 import useThunkDispatch from "../hooks/useThunkDispatch";
 import { AppStoreState } from "../lib/reducer";
 

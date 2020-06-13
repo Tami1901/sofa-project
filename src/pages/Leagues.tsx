@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 import useThunkDispatch from "../hooks/useThunkDispatch";
 import { AppStoreState } from "../lib/reducer";
-import { fetchLeagues } from "../reducers/actionsLeagues";
+import { fetchLeagues } from "../reducers/leagues";
 
 const Leagues: React.FC = () => {
   const dispatch = useThunkDispatch();

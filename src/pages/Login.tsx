@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Input,
   Button,
@@ -55,6 +55,9 @@ const Container = styled.div`
 `;
 
 const Login: React.FC = () => {
+  const [show, setShow] = useState(false);
+  const handleClick = (): void => setShow(!show);
+
   const history = useHistory();
   const location = useLocation();
 
@@ -67,19 +70,19 @@ const Login: React.FC = () => {
   }));
 
   useEffect(() => {
-    if (loggedIn && token) {
-      const { from } = (location.state as any) || {
-        from: { pathname: "/" }
-      };
-      history.replace(from);
-    }
-  }, [loggedIn, token]);
-
-  useEffect(() => {
     dispatch(LoginInit());
   }, []);
 
   const { register, handleSubmit } = useForm();
+
+  if (loggedIn && token) {
+    const { from } = (location.state as any) || {
+      from: { pathname: "/" }
+    };
+    history.replace(from);
+    return null;
+  }
+
   const onSubmit = (data): void => {
     dispatch(loginAction(data.username, data.password, data.keep)).then((ok) => {
       if (ok) {
@@ -87,9 +90,6 @@ const Login: React.FC = () => {
       }
     });
   };
-
-  const [show, setShow] = React.useState(false);
-  const handleClick = (): void => setShow(!show);
 
   return (
     <Container>

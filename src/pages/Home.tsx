@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Text, Image, Button } from "@chakra-ui/core";
 import { useSelector } from "react-redux";
@@ -35,13 +35,19 @@ const Container = styled.div`
 `;
 
 const Home: React.FC = () => {
-  const { username, loggedIn } = useSelector((store: AppStoreState) => ({
+  const { token, loggedIn } = useSelector((store: AppStoreState) => ({
     // useSelector se koristi za uzimanje podataka iz stora
     loggedIn: store.login.loggedIn, // uzme jel logiran i username
-    username: store.login.username
+    token: store.login.token
   }));
 
   const history = useHistory();
+
+  useEffect(() => {
+    if (token && loggedIn) {
+      history.push("/leagues");
+    }
+  }, []);
 
   return (
     <Container>

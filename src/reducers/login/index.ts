@@ -1,4 +1,4 @@
 export * from "./actions";
 export { reducer } from "./reducer";
-export { LoginInit } from "./reduxActions";
+export { LoginInit, LogoutAction } from "./reduxActions";
 export type { IUserLogin } from "./types";

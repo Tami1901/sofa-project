@@ -5,6 +5,7 @@ export const LOGIN_START = "LOGIN_START";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_FAIL = "LOGIN_FAIL";
 export const LOGIN_INIT = "LOGIN_INIT";
+export const LOGOUT = "LOGOUT";
 
 export interface UserStore {
   loading: boolean;
@@ -43,5 +44,14 @@ export interface IUserLoginInit {
   };
 }
 
-export type IUserLogin = IUserLoginStart | IUserLoginSuccess | IUserLoginFail | IUserLoginInit;
+export interface IUserLogout {
+  type: typeof LOGOUT;
+}
+
+export type IUserLogin =
+  | IUserLoginStart
+  | IUserLoginSuccess
+  | IUserLoginFail
+  | IUserLoginInit
+  | IUserLogout;
 export type ThunkResult<R> = ThunkAction<R, AppStoreState, null, IUserLogin>;

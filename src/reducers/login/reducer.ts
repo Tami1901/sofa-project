@@ -32,6 +32,12 @@ const reducer = (state = initState, action: t.IUserLogin): t.UserStore => {
         token: action.payload.token,
         loggedIn: action.payload.isLoggedIn
       };
+    case t.LOGOUT:
+      return {
+        ...state,
+        loggedIn: false,
+        token: undefined
+      };
     default:
       return state;
   }

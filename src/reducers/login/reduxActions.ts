@@ -27,6 +27,12 @@ export const LoginFail = (error: string): t.IUserLoginFail => {
   };
 };
 
+export const LogoutAction = (): t.IUserLogout => {
+  return {
+    type: t.LOGOUT
+  };
+};
+
 export const LoginInit = (): t.IUserLoginInit => {
   const token = localStorage.getItem("token");
 

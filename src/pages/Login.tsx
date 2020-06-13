@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   Input,
   Button,
@@ -9,7 +9,7 @@ import {
   Checkbox,
   Text
 } from "@chakra-ui/core";
-import { useHistory, Link } from "react-router-dom";
+import { useHistory, Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import styled from "@emotion/styled";
 import { useForm } from "react-hook-form";
@@ -56,6 +56,7 @@ const Container = styled.div`
 
 const Login: React.FC = () => {
   const history = useHistory();
+  const location = useLocation();
 
   const dispatch = useThunkDispatch();
   const { error, loading, loggedIn, token } = useSelector((store: AppStoreState) => ({
@@ -67,7 +68,10 @@ const Login: React.FC = () => {
 
   useEffect(() => {
     if (loggedIn && token) {
-      history.push("/leagues");
+      const { from } = (location.state as any) || {
+        from: { pathname: "/" }
+      };
+      history.replace(from);
     }
   }, [loggedIn, token]);
 
@@ -163,7 +167,7 @@ const Login: React.FC = () => {
             </Button>
           </div>
           <Text className="text">
-            You don't have an account? Register <Link to="/register">here</Link>
+            You don&lsquo;t have an account? Register <Link to="/register">here</Link>
           </Text>
         </form>
       </div>

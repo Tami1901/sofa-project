@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Stack, List, ListItem, Heading, Spinner, Text } from "@chakra-ui/core";
+import { Link } from "react-router-dom";
 
 import useThunkDispatch from "../hooks/useThunkDispatch";
 import { AppStoreState } from "../lib/reducer";
@@ -20,14 +21,15 @@ const Leagues: React.FC = () => {
   }, []);
 
   return (
-    <Stack>
+    <Stack p={3}>
       <Heading>Leagues</Heading>
+      <Link to="/leagues/new">New League</Link>
       {loading ? (
         <Spinner />
       ) : error ? (
         <Text>{error}</Text>
       ) : (
-        <List>
+        <List styleType="disc">
           {leagues.map((league) => (
             <ListItem key={league.id}>{league.name}</ListItem>
           ))}

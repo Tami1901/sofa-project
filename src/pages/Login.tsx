@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 import styled from "@emotion/styled";
 import { useForm } from "react-hook-form";
 
-import { loginAction, LoginClear } from "../reducers/actions";
+import { loginAction, LoginInit } from "../reducers/actions";
 import useThunkDispatch from "../hooks/useThunkDispatch";
 import { AppStoreState } from "../lib/reducer";
 
@@ -55,28 +55,31 @@ const Container = styled.div`
 `;
 
 const Login: React.FC = () => {
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-
   const history = useHistory();
 
   const dispatch = useThunkDispatch();
-  const { error, loading } = useSelector((store: AppStoreState) => ({
-    // spremljeni su u storu error i loading
-    // store je uvijek AppStoreState i onda se lijepo reci i ponudit ti
+  const { error, loading, loggedIn, token } = useSelector((store: AppStoreState) => ({
     error: store.login.error,
-    loading: store.login.loading
+    loading: store.login.loading,
+    loggedIn: store.login.loggedIn,
+    token: store.login.token
   }));
 
   useEffect(() => {
-    dispatch(LoginClear());
+    if (loggedIn && token) {
+      history.push("/leagues");
+    }
+  }, [loggedIn, token]);
+
+  useEffect(() => {
+    dispatch(LoginInit());
   }, []);
 
   const { register, handleSubmit } = useForm();
-  const onSubmit = (data) => {
-    dispatch(loginAction(data.username, data.password)).then((ok) => {
+  const onSubmit = (data): void => {
+    dispatch(loginAction(data.username, data.password, data.keep)).then((ok) => {
       if (ok) {
-        history.push("/");
+        history.push("/leagues");
       }
     });
   };
@@ -99,12 +102,11 @@ const Login: React.FC = () => {
         </Text>
         <br />
 
-        <Text textAlign="center" mb="1em" mt={error ? 0 : "1em"}>
-          {error}
+        <Text textAlign="center" mb="1em" pt={error ? 0 : "1.5em"}>
+          {error || " "}
         </Text>
 
         <form className="middle" onSubmit={handleSubmit(onSubmit)}>
-          {" "}
           <InputGroup>
             <InputLeftElement children={<Icon name="email" color="gray.300" />} />
             <Input
@@ -144,14 +146,19 @@ const Login: React.FC = () => {
             defaultIsChecked
             variantColor="green"
             className="checkbox"
-            value="remember"
-            // onChange={setKeepLoggedIn}
-            // checked={keepLoggedIn}
+            name="keep"
+            ref={register}
           >
             Keep me logged in
           </Checkbox>
           <div className="login">
-            <Button variantColor="green" type="submit" size="lg" className="loginbutton">
+            <Button
+              variantColor="green"
+              type="submit"
+              size="lg"
+              className="loginbutton"
+              isLoading={loading}
+            >
               Log in
             </Button>
           </div>

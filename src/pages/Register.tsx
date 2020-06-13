@@ -12,8 +12,6 @@ import {
   InputRightElement,
   Text
 } from "@chakra-ui/core";
-import { type } from "os";
-import { stat } from "fs";
 
 const Container = styled.div`
   background-color: rgb(248, 136, 61);
@@ -54,19 +52,19 @@ const Container = styled.div`
   }
 `;
 
-type Field = "username" | "password" | "confirmPassword" | "email";
+type Field = "username" | "email" | "password" | "confirmPassword";
 
 interface IState {
   username: string;
   email: string;
   password: string;
-  confirmPassword: string;
   showPassword: boolean;
+  confirmPassword: string;
   showConfirmPassword: boolean;
   errors: Record<Field, string | undefined>;
 }
 
-const defaultError = {
+const defaultErrors = {
   email: undefined,
   password: undefined,
   confirmPassword: undefined,
@@ -75,22 +73,19 @@ const defaultError = {
 
 const initState: IState = {
   email: "foo@bar.com",
-  username: "Tamara",
-  password: "fooba",
-  confirmPassword: "foo",
+  password: "foobar",
   showPassword: false,
+  confirmPassword: "foo",
   showConfirmPassword: false,
-  errors: { ...defaultError }
+  username: "foobar",
+  errors: { ...defaultErrors }
 };
 
 type IAction =
-  | {
-      type: Field; // sto zoves i s kojim podacima (payload)
-      payload: string;
-    }
-  | { type: "togglePassword" | "toggleConfirmPassword" }
   | { type: "error"; payload: { field: Field; message: string } }
-  | { type: "clearError" };
+  | { type: "clearError" }
+  | { type: Field; payload: string }
+  | { type: "togglePassword" | "toggleConfirmPassword" };
 
 const reducer = (state: IState, action: IAction): IState => {
   switch (action.type) {
@@ -98,10 +93,10 @@ const reducer = (state: IState, action: IAction): IState => {
       return { ...state, email: action.payload };
     case "username":
       return { ...state, username: action.payload };
-    case "confirmPassword":
-      return { ...state, confirmPassword: action.payload };
     case "password":
       return { ...state, password: action.payload };
+    case "confirmPassword":
+      return { ...state, confirmPassword: action.payload };
     case "togglePassword":
       return { ...state, showPassword: !state.showPassword };
     case "toggleConfirmPassword":
@@ -114,37 +109,36 @@ const reducer = (state: IState, action: IAction): IState => {
     case "clearError":
       return {
         ...state,
-        errors: { ...defaultError }
+        errors: { ...defaultErrors }
       };
-
     default:
       return state;
   }
 };
 
-const Register = () => {
+const Register: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initState);
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
+    const { password, confirmPassword } = state;
+
     dispatch({ type: "clearError" });
 
-    const { email, username, password, confirmPassword } = state;
-
     if (password.length < 6) {
-      dispatch({
-        type: "error",
-        payload: { field: "password", message: "Password too short" }
-      });
+      dispatch({ type: "error", payload: { field: "password", message: "Password too short" } });
       return;
     }
-    if (password != confirmPassword) {
+
+    if (password !== confirmPassword) {
       dispatch({
         type: "error",
-        payload: { field: "confirmPassword", message: "password no match" }
+        payload: { field: "confirmPassword", message: "Passwords don't match" }
       });
     }
   };
+
+  console.log(state);
 
   return (
     <Container>
@@ -164,18 +158,19 @@ const Register = () => {
                   placeholder="email"
                   className="input"
                   value={state.email}
-                  onChange={(e) => dispatch({ type: "email", payload: e.target.value })}
+                  onChange={(e): void => dispatch({ type: "email", payload: e.target.value })}
                   isRequired
                   isInvalid={!!state.errors.email}
                 />
               </InputGroup>
+
               <InputGroup>
                 <InputLeftElement children={<Icon name="check" color="gray.300" />} />
                 <Input
-                  type="text"
+                  type="phone"
                   placeholder="Username"
                   value={state.username}
-                  onChange={(e) => dispatch({ type: "username", payload: e.target.value })}
+                  onChange={(e): void => dispatch({ type: "username", payload: e.target.value })}
                   isRequired
                   isInvalid={!!state.errors.username}
                 />
@@ -188,23 +183,21 @@ const Register = () => {
                   placeholder="Enter password"
                   className="input"
                   value={state.password}
-                  onChange={(e) => dispatch({ type: "password", payload: e.target.value })}
+                  onChange={(e): void => dispatch({ type: "password", payload: e.target.value })}
                   isRequired
                   isInvalid={!!state.errors.password}
                 />
-
                 <InputRightElement width="4.5rem">
                   <Button
                     h="1.75rem"
                     size="sm"
-                    onClick={() => dispatch({ type: "togglePassword" })}
+                    onClick={(): void => dispatch({ type: "togglePassword" })}
                   >
                     {state.showPassword ? "Hide" : "Show"}
                   </Button>
                 </InputRightElement>
               </InputGroup>
               {state.errors.password && <Text>{state.errors.password}</Text>}
-
               <InputGroup size="md">
                 <InputLeftElement children={<Icon name="lock" color="gray.300" />} />
                 <Input
@@ -213,16 +206,17 @@ const Register = () => {
                   placeholder="Confirm password"
                   className="input"
                   value={state.confirmPassword}
-                  onChange={(e) => dispatch({ type: "confirmPassword", payload: e.target.value })}
+                  onChange={(e): void =>
+                    dispatch({ type: "confirmPassword", payload: e.target.value })
+                  }
                   isRequired
                   isInvalid={!!state.errors.confirmPassword}
                 />
-
                 <InputRightElement width="4.5rem">
                   <Button
                     h="1.75rem"
                     size="sm"
-                    onClick={() => dispatch({ type: "toggleConfirmPassword" })}
+                    onClick={(): void => dispatch({ type: "toggleConfirmPassword" })}
                   >
                     {state.showConfirmPassword ? "Hide" : "Show"}
                   </Button>
@@ -230,6 +224,12 @@ const Register = () => {
               </InputGroup>
               {state.errors.confirmPassword && <Text>{state.errors.confirmPassword}</Text>}
             </Stack>
+
+            <div className="login">
+              <Button variantColor="green" size="lg" className="loginbutton" type="submit">
+                Register
+              </Button>
+            </div>
 
             <div className="login">
               <Button variantColor="green" size="lg" className="loginbutton" type="submit">

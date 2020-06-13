@@ -5,7 +5,7 @@ import { AppStoreState } from "../lib/reducer";
 export const LOGIN_START = "LOGIN_START";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_FAIL = "LOGIN_FAIL";
-export const LOGIN_CLEAR = "LOGIN_CLEAR";
+export const LOGIN_INIT = "LOGIN_INIT";
 
 interface UserStore {
   loading: boolean;
@@ -36,11 +36,15 @@ interface IUserLoginFail {
   };
 }
 
-interface IUserLoginClear {
-  type: typeof LOGIN_CLEAR;
+interface IUserLoginInit {
+  type: typeof LOGIN_INIT;
+  payload: {
+    token: string | null;
+    isLoggedIn: boolean;
+  };
 }
 
-export type IUserLogin = IUserLoginStart | IUserLoginSuccess | IUserLoginFail | IUserLoginClear;
+export type IUserLogin = IUserLoginStart | IUserLoginSuccess | IUserLoginFail | IUserLoginInit;
 type ThunkResult<R> = ThunkAction<R, AppStoreState, null, IUserLogin>;
 
 const initState: UserStore = { loading: false, loggedIn: false };
@@ -68,9 +72,12 @@ const reducer = (state = initState, action: IUserLogin): UserStore => {
         loggedIn: false,
         error: action.payload.error
       };
-    case LOGIN_CLEAR:
+    case LOGIN_INIT:
       return {
-        ...initState
+        ...state,
+        error: undefined,
+        token: action.payload.token,
+        loggedIn: action.payload.isLoggedIn
       };
     default:
       return state;
@@ -103,15 +110,18 @@ const LoginFail = (error: string): IUserLoginFail => {
     }
   };
 };
-const LoginClear = (): IUserLoginClear => {
-  return {
-    type: LOGIN_CLEAR
-  };
+const LoginInit = (): IUserLoginInit => {
+  const token = localStorage.getItem("token");
+
+  // TODO: Check if token is correct
+
+  return { type: LOGIN_INIT, payload: { token, isLoggedIn: !!token } };
 };
 
 const loginAction: ActionCreator<ThunkResult<Promise<boolean>>> = (
   username: string,
-  password: string
+  password: string,
+  keep: boolean
 ) => async (dispatch): Promise<boolean> => {
   dispatch(LoginStart(username));
 
@@ -128,12 +138,16 @@ const loginAction: ActionCreator<ThunkResult<Promise<boolean>>> = (
 
     if (res.ok) {
       resData = resData as {
+        token: string;
         user: {
-          token: string;
           user: { username: string; extra1: string; extra2: string; extra: string; id: string };
         };
       };
-      dispatch(LoginSuccess(resData.user.token));
+      const { token } = resData;
+      if (keep) {
+        localStorage.setItem("token", token);
+      }
+      dispatch(LoginSuccess(token));
       return true;
     }
 
@@ -144,4 +158,4 @@ const loginAction: ActionCreator<ThunkResult<Promise<boolean>>> = (
   }
 };
 
-export { reducer, loginAction, LoginClear };
+export { reducer, loginAction, LoginInit };

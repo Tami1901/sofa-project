@@ -230,12 +230,6 @@ const Register: React.FC = () => {
                 Register
               </Button>
             </div>
-
-            <div className="login">
-              <Button variantColor="green" size="lg" className="loginbutton" type="submit">
-                Register
-              </Button>
-            </div>
           </form>
           <Text className="text">
             You already have an account? Login <Link to="/login">here</Link>

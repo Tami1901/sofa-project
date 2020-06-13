@@ -17,7 +17,8 @@ const Leagues: React.FC = () => {
   }));
 
   useEffect(() => {
-    dispatch(fetchLeagues(token, leagues.length === 0));
+    // dispatch(fetchLeagues(token, leagues.length === 0));
+    dispatch(fetchLeagues(token, true));
   }, []);
 
   return (

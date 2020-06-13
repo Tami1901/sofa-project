@@ -309,8 +309,12 @@ const createLeague: ICreate = (token: string, data: NewLeagueData) => async (
 };
 
 type IGet = ActionCreator<ThunkResult<Promise<void>>>;
-const fetchLeague: IGet = (token: string, id: string) => async (dispatch): Promise<void> => {
-  dispatch(LeagueLoading());
+const fetchLeague: IGet = (token: string, id: string, exists: boolean) => async (
+  dispatch
+): Promise<void> => {
+  if (!exists) {
+    dispatch(LeagueLoading());
+  }
 
   try {
     const res = await fetch(`https://private-leagues-api.herokuapp.com/api/leagues/${id}`, {

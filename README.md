@@ -30,7 +30,7 @@ LIST OF LEAGUES
 
 - [x] **User can see league (leagues)**
 - [x] **User can add event to a league**
-- [ ] **User can see league details of a league**
+- [x] **User can see league details of a league**
 - [ ] _User can delete league_
 - [ ] _User can administrate league (have admin rights)_
 - [ ] _User can change only leagues with admin rights_

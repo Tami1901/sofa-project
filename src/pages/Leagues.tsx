@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Stack, List, ListItem, Heading, Spinner, Text } from "@chakra-ui/core";
+import { Stack, List, ListItem, Heading, Spinner, Text, Link as ChakraLink } from "@chakra-ui/core";
 import { Link } from "react-router-dom";
 
 import useThunkDispatch from "../hooks/useThunkDispatch";
@@ -17,13 +17,15 @@ const Leagues: React.FC = () => {
   }));
 
   useEffect(() => {
-    dispatch(fetchLeagues(token));
+    dispatch(fetchLeagues(token, leagues.length === 0));
   }, []);
 
   return (
     <Stack p={3}>
       <Heading>Leagues</Heading>
-      <Link to="/leagues/new">New League</Link>
+      <ChakraLink>
+        <Link to="/leagues/new">New League</Link>
+      </ChakraLink>
       {loading ? (
         <Spinner />
       ) : error ? (
@@ -31,7 +33,11 @@ const Leagues: React.FC = () => {
       ) : (
         <List styleType="disc">
           {leagues.map((league) => (
-            <ListItem key={league.id}>{league.name}</ListItem>
+            <ListItem key={league.id}>
+              <ChakraLink>
+                <Link to={`/leagues/${league.id}`}>{league.name}</Link>
+              </ChakraLink>
+            </ListItem>
           ))}
         </List>
       )}

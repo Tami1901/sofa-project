@@ -7,7 +7,8 @@ import {
   Input,
   Button,
   FormControl,
-  Text
+  Text,
+  Link as ChakraLink
 } from "@chakra-ui/core";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -40,7 +41,9 @@ const LeaguesNew: React.FC = () => {
   return (
     <Stack p={3}>
       <Heading>New League</Heading>
-      <Link to="/leagues">Leagues</Link>
+      <ChakraLink>
+        <Link to="/leagues">Leagues</Link>
+      </ChakraLink>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3}>
           <FormControl isReadOnly={loading}>

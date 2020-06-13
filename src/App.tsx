@@ -13,6 +13,7 @@ import Register from "./pages/Register";
 import Leagues from "./pages/Leagues";
 import { AppStoreState } from "./lib/reducer";
 import LeaguesNew from "./pages/LeaguesNew";
+import League from "./pages/League";
 
 const PrivateRoute: React.FC<RouteProps> = (props) => {
   const location = useLocation();
@@ -43,6 +44,7 @@ const App: React.FC = () => {
       <BrowserRouter>
         <Switch>
           <PrivateRoute path="/leagues/new" component={LeaguesNew} exact />
+          <PrivateRoute path="/leagues/:id" component={League} />
           <PrivateRoute path="/leagues" component={Leagues} exact />
           <Route path="/page" component={Page} exact />
           <Route path="/login" component={Login} exact />

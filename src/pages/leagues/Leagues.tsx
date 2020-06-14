@@ -1,34 +1,48 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import {
-  Stack,
-  Heading,
-  Spinner,
-  Text,
-  Box,
-  Link as ChakraLink,
-  Grid,
-  Flex
-} from "@chakra-ui/core";
-import { Link, useHistory } from "react-router-dom";
+import { Stack, Heading, Spinner, Text, Grid, Flex, Button } from "@chakra-ui/core";
+import { useHistory } from "react-router-dom";
 
 import useThunkDispatch from "../../hooks/useThunkDispatch";
 import { AppStoreState } from "../../lib/reducer";
 import { fetchLeagues, deleteLeague } from "../../reducers/leagues";
-import { LinkButton } from "../../components/Link";
+import Link, { LinkButton } from "../../components/Link";
+import { League } from "../../reducers/leagues/types";
 
-const Feature: React.FC<{ title: string; place: string; type: string }> = ({
-  title,
-  place,
-  type,
-  ...rest
-}) => {
+const Feature: React.FC<{
+  league: League;
+  remove: (id: string) => () => void;
+}> = ({ league, remove }) => {
   return (
-    <Box p={5} shadow="md" borderWidth="1px" {...rest}>
-      <Heading fontSize="xl">{title}</Heading>
-      <Text mt={4}>Place: {place}</Text>
-      <Text mt={4}>Type: {type}</Text>
-    </Box>
+    <Stack spacing={4} p={5} shadow="md" borderWidth="1px">
+      <Link to={`/leagues/${league.id}`}>
+        <Heading fontSize="xl">{league.name}</Heading>
+      </Link>
+      <Text>Place: {league.place}</Text>
+      <Text>Type: {league.type}</Text>
+      <Flex justify="space-between">
+        <LinkButton
+          leftIcon="edit"
+          w="100%"
+          to={`/leagues/${league.id}/edit`}
+          variantColor="green"
+          variant="outline"
+          mr={2}
+        >
+          Edit
+        </LinkButton>
+        <Button
+          leftIcon="delete"
+          w="100%"
+          onClick={remove(league.id)}
+          variantColor="red"
+          variant="outline"
+          ml={2}
+        >
+          Delete
+        </Button>
+      </Flex>
+    </Stack>
   );
 };
 
@@ -58,31 +72,21 @@ const Leagues: React.FC = () => {
   };
 
   return (
-    <Stack p={3}>
+    <Stack p={3} w="90%" m="0 auto" spacing={4}>
       <Flex justifyContent="space-between">
-        <Flex align="flex-end">
-          <Heading className="title">Leagues</Heading>
-        </Flex>
-        <Flex align="center" justify="center">
-          <LinkButton variantColor="green" to="/leagues/new">
-            New League
-          </LinkButton>
-        </Flex>
+        <Heading className="title">Leagues</Heading>
+        <LinkButton variantColor="blue" to="/leagues/new">
+          New League
+        </LinkButton>
       </Flex>
       {loading ? (
         <Spinner />
       ) : error ? (
         <Text>{error}</Text>
       ) : (
-        // <List styleType="disc">
         <Grid templateColumns="repeat(auto-fit, minmax(300px, 1fr))" gap={6}>
           {leagues.map((league) => (
-            <>
-              <Link to={`/leagues/${league.id}`}>
-                <Feature title={league.name} place={league.place} type={league.type} />
-              </Link>
-              <ChakraLink onClick={remove(league.id)}>Delete</ChakraLink>
-            </>
+            <Feature remove={remove} league={league} />
           ))}
         </Grid>
       )}

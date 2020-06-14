@@ -5,7 +5,8 @@ const initStore: t.LeaguesStore = {
   error: "",
   leagues: [],
   add: { loading: false, error: "" },
-  addEvent: { loading: false, error: "" }
+  addEvent: { loading: false, error: "" },
+  addScore: { loading: [], error: {} }
 };
 
 export const reducer = (store = initStore, action: t.ILeagueAction): t.LeaguesStore => {
@@ -61,6 +62,40 @@ export const reducer = (store = initStore, action: t.ILeagueAction): t.LeaguesSt
       };
     case t.ADD_EVENT_FAIL:
       return { ...store, addEvent: { loading: true, error: action.payload.error } };
+    case t.ADD_SCORE_TO_EVENT_LOADING:
+      return {
+        ...store,
+        addScore: {
+          loading: [...store.addScore.loading, action.payload.eventId],
+          error: { ...store.addScore.error, [action.payload.eventId]: undefined }
+        }
+      };
+    case t.ADD_SCORE_TO_EVENT_SUCCESS:
+      return {
+        ...store,
+        leagues: store.leagues.map((l) =>
+          l.id === action.payload.leagueId
+            ? {
+                ...l,
+                events: (l.events || []).map((e) =>
+                  e.id === action.payload.eventId ? { ...e, score: action.payload.score } : e
+                )
+              }
+            : l
+        ),
+        addScore: {
+          loading: store.addScore.loading.filter((a) => a !== action.payload.eventId),
+          error: { ...store.addScore.error, [action.payload.eventId]: undefined }
+        }
+      };
+    case t.ADD_SCORE_TO_EVENT_FAIL:
+      return {
+        ...store,
+        addScore: {
+          loading: store.addScore.loading.filter((a) => a !== action.payload.eventId),
+          error: { ...store.addScore.error, [action.payload.eventId]: action.payload.error }
+        }
+      };
     default:
       return store;
   }

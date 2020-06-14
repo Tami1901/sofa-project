@@ -96,3 +96,37 @@ export const AddEventFail = (error: string): t.IEventAddFail => {
     }
   };
 };
+
+export const AddScoreToEventLoading = (eventId: string): t.IAddScoreToEventLoading => {
+  return {
+    type: t.ADD_SCORE_TO_EVENT_LOADING,
+    payload: {
+      eventId
+    }
+  };
+};
+
+export const AddScoreToEventSuccess = (
+  leagueId: string,
+  eventId: string,
+  score: string
+): t.IAddScoreToEventSuccess => {
+  return {
+    type: t.ADD_SCORE_TO_EVENT_SUCCESS,
+    payload: {
+      leagueId,
+      eventId,
+      score
+    }
+  };
+};
+
+export const AddScoreToEventError = (eventId: string, error: string): t.IAddScoreToEventFail => {
+  return {
+    type: t.ADD_SCORE_TO_EVENT_FAIL,
+    payload: {
+      eventId,
+      error
+    }
+  };
+};

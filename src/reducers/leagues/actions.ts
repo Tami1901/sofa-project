@@ -175,4 +175,38 @@ const createEvent: ICreateEvent = (
   }
 };
 
-export { fetchLeagues, createLeague, fetchLeague, createEvent };
+type IAddScoreToEvent = ActionCreator<t.ThunkResult<Promise<void>>>;
+const addScoreToEvent: IAddScoreToEvent = (
+  token: string,
+  leagueId: string,
+  eventId: string,
+  score: string
+) => async (dispatch): Promise<void> => {
+  dispatch(a.AddScoreToEventLoading(eventId));
+
+  try {
+    const res = await fetch(
+      `https://private-leagues-api.herokuapp.com/api/leagues/${leagueId}/events/${eventId}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({ score }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          "X-App-Key": "tamara"
+        }
+      }
+    );
+
+    if (!res.ok) {
+      const resData = await res.json();
+      throw new Error(resData.error);
+    }
+
+    dispatch(a.AddScoreToEventSuccess(leagueId, eventId, score));
+  } catch (err) {
+    dispatch(a.AddScoreToEventError(eventId, err.message));
+  }
+};
+
+export { fetchLeagues, createLeague, fetchLeague, createEvent, addScoreToEvent };

@@ -12,14 +12,15 @@ import {
   FormControl,
   Input
 } from "@chakra-ui/core";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useHistory } from "react-router-dom";
 
 import useThunkDispatch from "../hooks/useThunkDispatch";
 import { AppStoreState } from "../lib/reducer";
-import { fetchLeague, addScoreToEvent } from "../reducers/leagues";
+import { fetchLeague, addScoreToEvent, deleteLeague } from "../reducers/leagues";
 
 const League: React.FC = () => {
   const { id } = useParams();
+  const history = useHistory();
 
   const [addId, setAddId] = useState<string | undefined>();
   const [value, setValue] = useState<string | undefined>();
@@ -51,7 +52,14 @@ const League: React.FC = () => {
     setValue("");
   };
 
-  console.log(scoreError);
+  const onDelete = (): void => {
+    // eslint-disable-next-line no-alert
+    if (window.confirm("Are you sure?")) {
+      dispatch(deleteLeague(token, id)).then(() => {
+        history.push(`/leagues`);
+      });
+    }
+  };
 
   return (
     <Stack p={3}>
@@ -66,6 +74,9 @@ const League: React.FC = () => {
         <ChakraLink>
           <Link to={`/leagues/${id}/new-event`}>Add new event</Link>
         </ChakraLink>
+        <Button color="red.600" onClick={onDelete}>
+          Delete
+        </Button>
       </Stack>
       <hr />
       {loading ? (

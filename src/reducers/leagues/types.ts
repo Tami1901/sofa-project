@@ -17,6 +17,10 @@ export const UPDATE_LEAGUE_LOADING = "UPDATE_LEAGUE_LOADING";
 export const UPDATE_LEAGUE_SUCCESS = "UPDATE_LEAGUE_SUCCESS";
 export const UPDATE_LEAGUE_FAIL = "UPDATE_LEAGUE_FAIL";
 
+export const DELETE_LEAGUE_LOADING = "DELETE_LEAGUE_LOADING";
+export const DELETE_LEAGUE_SUCCESS = "DELETE_LEAGUE_SUCCESS";
+export const DELETE_LEAGUE_FAIL = "DELETE_LEAGUE_FAIL";
+
 export const ADD_EVENT_LOADING = "ADD_EVENT_LOADING";
 export const ADD_EVENT_SUCCESS = "ADD_EVENT_SUCCESS";
 export const ADD_EVENT_FAIL = "ADD_EVENT_FAIL";
@@ -50,6 +54,10 @@ export interface LeaguesStore {
   error: string;
   leagues: League[];
   update: {
+    loading: string[];
+    error: Record<string, string>;
+  };
+  remove: {
     loading: string[];
     error: Record<string, string>;
   };
@@ -165,6 +173,28 @@ export interface ILeagueUpdateFail {
   };
 }
 
+export interface ILeagueDeleteLoading {
+  type: typeof DELETE_LEAGUE_LOADING;
+  payload: {
+    id: string;
+  };
+}
+
+export interface ILeagueDeleteSuccess {
+  type: typeof DELETE_LEAGUE_SUCCESS;
+  payload: {
+    id: string;
+  };
+}
+
+export interface ILeagueDeleteFail {
+  type: typeof DELETE_LEAGUE_FAIL;
+  payload: {
+    id: string;
+    error: string;
+  };
+}
+
 export interface IAddScoreToEventLoading {
   type: typeof ADD_SCORE_TO_EVENT_LOADING;
   payload: {
@@ -207,4 +237,7 @@ export type ILeagueAction =
   | IAddScoreToEventFail
   | ILeagueUpdateLoading
   | ILeagueUpdateSuccess
-  | ILeagueUpdateFail;
+  | ILeagueUpdateFail
+  | ILeagueDeleteLoading
+  | ILeagueDeleteSuccess
+  | ILeagueDeleteFail;

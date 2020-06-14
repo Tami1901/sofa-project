@@ -101,6 +101,34 @@ export const LeagueUpdateFail = (id: string, error: string): t.ILeagueUpdateFail
   };
 };
 
+export const LeagueDeleteLoading = (id: string): t.ILeagueDeleteLoading => {
+  return {
+    type: t.DELETE_LEAGUE_LOADING,
+    payload: {
+      id
+    }
+  };
+};
+
+export const LeagueDeleteSuccess = (id: string): t.ILeagueDeleteSuccess => {
+  return {
+    type: t.DELETE_LEAGUE_SUCCESS,
+    payload: {
+      id
+    }
+  };
+};
+
+export const LeagueDeleteFail = (id: string, error: string): t.ILeagueDeleteFail => {
+  return {
+    type: t.DELETE_LEAGUE_FAIL,
+    payload: {
+      id,
+      error
+    }
+  };
+};
+
 export const AddEventLoading = (): t.IEventAddLoading => {
   return {
     type: t.ADD_EVENT_LOADING

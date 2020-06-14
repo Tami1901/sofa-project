@@ -169,4 +169,34 @@ const updateLeague: IUpdateLeague = (
   }
 };
 
-export { fetchLeagues, createLeague, fetchLeague, createEvent, addScoreToEvent, updateLeague };
+type IDeleteLeague = ActionCreator<t.ThunkResult<Promise<boolean>>>;
+const deleteLeague: IDeleteLeague = (token: string, id: string) => async (
+  dispatch
+): Promise<boolean> => {
+  dispatch(a.LeagueDeleteLoading(id));
+
+  try {
+    const { res } = await api.remove(`/leagues/${id}`, false, token, true);
+
+    if (!res.ok) {
+      const json = await res.json();
+      throw new Error((json as any).error);
+    }
+
+    dispatch(a.LeagueDeleteSuccess(id));
+    return true;
+  } catch (err) {
+    dispatch(a.LeagueDeleteFail(id, err.message));
+    return false;
+  }
+};
+
+export {
+  fetchLeagues,
+  createLeague,
+  fetchLeague,
+  createEvent,
+  addScoreToEvent,
+  updateLeague,
+  deleteLeague
+};

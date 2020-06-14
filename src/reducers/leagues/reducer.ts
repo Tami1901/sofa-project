@@ -7,7 +7,8 @@ const initStore: t.LeaguesStore = {
   add: { loading: false, error: "" },
   addEvent: { loading: false, error: "" },
   addScore: { loading: [], error: {} },
-  update: { loading: [], error: {} }
+  update: { loading: [], error: {} },
+  remove: { loading: [], error: {} }
 };
 
 export const reducer = (store = initStore, action: t.ILeagueAction): t.LeaguesStore => {
@@ -75,6 +76,31 @@ export const reducer = (store = initStore, action: t.ILeagueAction): t.LeaguesSt
         update: {
           loading: store.update.loading.filter((a) => a !== action.payload.id),
           error: { ...store.update.error, [action.payload.id]: action.payload.error }
+        }
+      };
+    case t.DELETE_LEAGUE_LOADING:
+      return {
+        ...store,
+        remove: {
+          loading: [...store.remove.loading, action.payload.id],
+          error: { ...store.remove.error, [action.payload.id]: undefined }
+        }
+      };
+    case t.DELETE_LEAGUE_SUCCESS:
+      return {
+        ...store,
+        leagues: store.leagues.filter((l) => l.id !== action.payload.id),
+        remove: {
+          loading: store.remove.loading.filter((a) => a !== action.payload.id),
+          error: { ...store.remove.error, [action.payload.id]: undefined }
+        }
+      };
+    case t.DELETE_LEAGUE_FAIL:
+      return {
+        ...store,
+        remove: {
+          loading: store.remove.loading.filter((a) => a !== action.payload.id),
+          error: { ...store.remove.error, [action.payload.id]: action.payload.error }
         }
       };
     case t.ADD_EVENT_LOADING:

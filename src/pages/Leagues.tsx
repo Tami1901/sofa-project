@@ -1,13 +1,15 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Stack, List, ListItem, Heading, Spinner, Text, Link as ChakraLink } from "@chakra-ui/core";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 import useThunkDispatch from "../hooks/useThunkDispatch";
 import { AppStoreState } from "../lib/reducer";
-import { fetchLeagues } from "../reducers/leagues";
+import { fetchLeagues, deleteLeague } from "../reducers/leagues";
 
 const Leagues: React.FC = () => {
+  const history = useHistory();
+
   const dispatch = useThunkDispatch();
   const { loading, error, leagues, token } = useSelector((store: AppStoreState) => ({
     loading: store.leagues.loading,
@@ -17,9 +19,17 @@ const Leagues: React.FC = () => {
   }));
 
   useEffect(() => {
-    // dispatch(fetchLeagues(token, leagues.length === 0));
     dispatch(fetchLeagues(token, true));
   }, [dispatch]);
+
+  const remove = (id: string) => (): void => {
+    // eslint-disable-next-line no-alert
+    if (window.confirm("Are you sure?")) {
+      dispatch(deleteLeague(token, id)).then(() => {
+        history.push(`/leagues`);
+      });
+    }
+  };
 
   return (
     <Stack p={3}>
@@ -40,7 +50,8 @@ const Leagues: React.FC = () => {
               </ChakraLink>{" "}
               <ChakraLink>
                 <Link to={`/leagues/${league.id}/edit`}>Edit</Link>
-              </ChakraLink>
+              </ChakraLink>{" "}
+              <ChakraLink onClick={remove(league.id)}>Delete</ChakraLink>
             </ListItem>
           ))}
         </List>

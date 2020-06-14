@@ -1,21 +1,23 @@
 import React, { useEffect } from "react";
-import { Stack, Heading, Link as ChakraLink, FormControl, Input, Button } from "@chakra-ui/core";
+import { Stack, Heading, Link as ChakraLink } from "@chakra-ui/core";
 import { Link, useParams, useHistory } from "react-router-dom";
-import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
+
 import { AppStoreState } from "../lib/reducer";
 import useThunkDispatch from "../hooks/useThunkDispatch";
 import { fetchLeague, createEvent } from "../reducers/leagues";
+import EventForm from "../components/EventForm";
 
 const EventNew: React.FC = () => {
   const { id } = useParams();
   const history = useHistory();
-  const { register, handleSubmit } = useForm();
   const dispatch = useThunkDispatch();
 
-  const { leagueName, token } = useSelector((state: AppStoreState) => ({
+  const { leagueName, token, loading, error } = useSelector((state: AppStoreState) => ({
     leagueName: state.leagues.leagues.find((l) => l.id === id)?.name,
-    token: state.login.token
+    token: state.login.token,
+    loading: state.leagues.addEvent.loading,
+    error: state.leagues.addEvent.error
   }));
 
   useEffect(() => {
@@ -42,18 +44,7 @@ const EventNew: React.FC = () => {
           <Link to={`/leagues/${id}`}>Back to League</Link>
         </ChakraLink>
       </Stack>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <FormControl>
-          <Stack spacing={2}>
-            <Input type="text" isRequired placeholder="Event name" name="name" ref={register} />
-            <Input type="text" isRequired placeholder="A" name="a" ref={register} />
-            <Input type="text" isRequired placeholder="B" name="b" ref={register} />
-          </Stack>
-        </FormControl>
-        <Button mt={3} type="submit">
-          Add
-        </Button>
-      </form>
+      <EventForm onSubmit={onSubmit} loading={loading} error={error} buttonText="Create" />
     </Stack>
   );
 };

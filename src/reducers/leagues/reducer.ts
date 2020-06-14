@@ -6,7 +6,7 @@ const initStore: t.LeaguesStore = {
   leagues: [],
   add: { loading: false, error: "" },
   addEvent: { loading: false, error: "" },
-  addScore: { loading: [], error: {} },
+  updateEvent: { loading: [], error: {} },
   update: { loading: [], error: {} },
   remove: { loading: [], error: {} }
 };
@@ -116,15 +116,15 @@ export const reducer = (store = initStore, action: t.ILeagueAction): t.LeaguesSt
       };
     case t.ADD_EVENT_FAIL:
       return { ...store, addEvent: { loading: true, error: action.payload.error } };
-    case t.ADD_SCORE_TO_EVENT_LOADING:
+    case t.UPDATE_EVENT_LOADING:
       return {
         ...store,
-        addScore: {
-          loading: [...store.addScore.loading, action.payload.eventId],
-          error: { ...store.addScore.error, [action.payload.eventId]: undefined }
+        updateEvent: {
+          loading: [...store.updateEvent.loading, action.payload.id],
+          error: { ...store.updateEvent.error, [action.payload.id]: undefined }
         }
       };
-    case t.ADD_SCORE_TO_EVENT_SUCCESS:
+    case t.UPDATE_EVENT_SUCCESS:
       return {
         ...store,
         leagues: store.leagues.map((l) =>
@@ -132,22 +132,22 @@ export const reducer = (store = initStore, action: t.ILeagueAction): t.LeaguesSt
             ? {
                 ...l,
                 events: (l.events || []).map((e) =>
-                  e.id === action.payload.eventId ? { ...e, score: action.payload.score } : e
+                  e.id === action.payload.id ? { ...e, ...action.payload.data } : e
                 )
               }
             : l
         ),
-        addScore: {
-          loading: store.addScore.loading.filter((a) => a !== action.payload.eventId),
-          error: { ...store.addScore.error, [action.payload.eventId]: undefined }
+        updateEvent: {
+          loading: store.updateEvent.loading.filter((a) => a !== action.payload.id),
+          error: { ...store.updateEvent.error, [action.payload.id]: undefined }
         }
       };
-    case t.ADD_SCORE_TO_EVENT_FAIL:
+    case t.UPDATE_EVENT_FAIL:
       return {
         ...store,
-        addScore: {
-          loading: store.addScore.loading.filter((a) => a !== action.payload.eventId),
-          error: { ...store.addScore.error, [action.payload.eventId]: action.payload.error }
+        updateEvent: {
+          loading: store.updateEvent.loading.filter((a) => a !== action.payload.id),
+          error: { ...store.updateEvent.error, [action.payload.id]: action.payload.error }
         }
       };
     default:

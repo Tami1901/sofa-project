@@ -28,6 +28,7 @@ import useThunkDispatch from "./hooks/useThunkDispatch";
 import { LogoutAction } from "./reducers/login";
 import User from "./pages/User";
 import LeagueEdit from "./pages/LeaguesEdit";
+import EventEdit from "./pages/EventEdit";
 
 const PrivateRoute: React.FC<RouteProps> = (props) => {
   const location = useLocation();
@@ -84,6 +85,7 @@ const App: React.FC = () => {
         <Switch>
           <PrivateRoute path="/user" component={User} exact />
           <PrivateRoute path="/leagues/:id/edit" component={LeagueEdit} />
+          <PrivateRoute path="/leagues/:id/event/:eventId" component={EventEdit} />
           <PrivateRoute path="/leagues/:id/new-event" component={EventNew} />
           <PrivateRoute path="/leagues/new" component={LeaguesNew} exact />
           <PrivateRoute path="/leagues/:id" component={League} />

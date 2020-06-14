@@ -25,9 +25,9 @@ export const ADD_EVENT_LOADING = "ADD_EVENT_LOADING";
 export const ADD_EVENT_SUCCESS = "ADD_EVENT_SUCCESS";
 export const ADD_EVENT_FAIL = "ADD_EVENT_FAIL";
 
-export const ADD_SCORE_TO_EVENT_LOADING = "ADD_SCORE_TO_EVENT_LOADING";
-export const ADD_SCORE_TO_EVENT_SUCCESS = "ADD_SCORE_TO_EVENT_SUCCESS";
-export const ADD_SCORE_TO_EVENT_FAIL = "ADD_SCORE_TO_EVENT_FAIL";
+export const UPDATE_EVENT_LOADING = "UPDATE_EVENT_LOADING";
+export const UPDATE_EVENT_SUCCESS = "UPDATE_EVENT_SUCCESS";
+export const UPDATE_EVENT_FAIL = "UPDATE_EVENT_FAIL";
 
 export interface League {
   id: string;
@@ -49,30 +49,25 @@ export interface IEvent {
   b: string;
 }
 
+interface UpdateMany {
+  loading: string[];
+  error: Record<string, string>;
+}
+
+interface UpdateOne {
+  loading: boolean;
+  error: string;
+}
+
 export interface LeaguesStore {
   loading: boolean;
   error: string;
   leagues: League[];
-  update: {
-    loading: string[];
-    error: Record<string, string>;
-  };
-  remove: {
-    loading: string[];
-    error: Record<string, string>;
-  };
-  addScore: {
-    loading: string[];
-    error: Record<string, string>;
-  };
-  add: {
-    loading: boolean;
-    error: string;
-  };
-  addEvent: {
-    loading: boolean;
-    error: string;
-  };
+  update: UpdateMany;
+  remove: UpdateMany;
+  updateEvent: UpdateMany;
+  add: UpdateOne;
+  addEvent: UpdateOne;
 }
 
 export type ThunkResult<R> = ThunkAction<R, AppStoreState, null, ILeagueAction>;
@@ -195,26 +190,26 @@ export interface ILeagueDeleteFail {
   };
 }
 
-export interface IAddScoreToEventLoading {
-  type: typeof ADD_SCORE_TO_EVENT_LOADING;
+export interface IUpdateEventLoading {
+  type: typeof UPDATE_EVENT_LOADING;
   payload: {
-    eventId: string;
+    id: string;
   };
 }
 
-export interface IAddScoreToEventSuccess {
-  type: typeof ADD_SCORE_TO_EVENT_SUCCESS;
+export interface IUpdateEventSuccess {
+  type: typeof UPDATE_EVENT_SUCCESS;
   payload: {
     leagueId: string;
-    eventId: string;
-    score: string;
+    id: string;
+    data: IEvent;
   };
 }
 
-export interface IAddScoreToEventFail {
-  type: typeof ADD_SCORE_TO_EVENT_FAIL;
+export interface IUpdateEventFail {
+  type: typeof UPDATE_EVENT_FAIL;
   payload: {
-    eventId: string;
+    id: string;
     error: string;
   };
 }
@@ -232,9 +227,9 @@ export type ILeagueAction =
   | IEventAddLoading
   | IEventAddSuccess
   | IEventAddFail
-  | IAddScoreToEventLoading
-  | IAddScoreToEventSuccess
-  | IAddScoreToEventFail
+  | IUpdateEventSuccess
+  | IUpdateEventLoading
+  | IUpdateEventFail
   | ILeagueUpdateLoading
   | ILeagueUpdateSuccess
   | ILeagueUpdateFail

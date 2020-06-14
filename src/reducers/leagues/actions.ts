@@ -111,19 +111,26 @@ const createEvent: ICreateEvent = (
   }
 };
 
-type IAddScoreToEvent = ActionCreator<t.ThunkResult<Promise<void>>>;
-const addScoreToEvent: IAddScoreToEvent = (
+interface EventUpdateData {
+  score?: string;
+  name?: string;
+  a?: string;
+  b?: string;
+}
+
+type IUpdateEvent = ActionCreator<t.ThunkResult<Promise<boolean>>>;
+const updateEvent: IUpdateEvent = (
   token: string,
   leagueId: string,
   eventId: string,
-  score: string
-) => async (dispatch): Promise<void> => {
-  dispatch(a.AddScoreToEventLoading(eventId));
+  data: EventUpdateData
+) => async (dispatch): Promise<boolean> => {
+  dispatch(a.UpdateEventLoading(eventId));
 
   try {
     const { res } = await api.patch(
       `/leagues/${leagueId}/events/${eventId}`,
-      { score },
+      data as any,
       false,
       token,
       true
@@ -134,10 +141,24 @@ const addScoreToEvent: IAddScoreToEvent = (
       throw new Error(resData.error);
     }
 
-    dispatch(a.AddScoreToEventSuccess(leagueId, eventId, score));
+    const { res: res2, json } = await api.get<t.IEvent>(
+      `/leagues/${leagueId}/events/${eventId}`,
+      true,
+      token,
+      true
+    );
+    if (!res2.ok) {
+      throw new Error((json as any).error);
+    }
+
+    dispatch(a.UpdateEventSuccess(leagueId, eventId, json));
+
+    return true;
   } catch (err) {
-    dispatch(a.AddScoreToEventError(eventId, err.message));
+    dispatch(a.UpdateEventError(eventId, err.message));
   }
+
+  return false;
 };
 
 type IUpdateLeague = ActionCreator<t.ThunkResult<Promise<boolean>>>;
@@ -196,7 +217,7 @@ export {
   createLeague,
   fetchLeague,
   createEvent,
-  addScoreToEvent,
+  updateEvent,
   updateLeague,
   deleteLeague
 };

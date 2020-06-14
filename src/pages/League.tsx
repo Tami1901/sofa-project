@@ -16,7 +16,7 @@ import { Link, useParams, useHistory } from "react-router-dom";
 
 import useThunkDispatch from "../hooks/useThunkDispatch";
 import { AppStoreState } from "../lib/reducer";
-import { fetchLeague, addScoreToEvent, deleteLeague } from "../reducers/leagues";
+import { fetchLeague, updateEvent, deleteLeague } from "../reducers/leagues";
 
 const League: React.FC = () => {
   const { id } = useParams();
@@ -31,7 +31,7 @@ const League: React.FC = () => {
     error: store.leagues.error,
     league: store.leagues.leagues.find((l) => l.id === id) || undefined,
     token: store.login.token,
-    scoreState: store.leagues.addScore
+    scoreState: store.leagues.updateEvent
   }));
 
   const { loading: scoreLoading, error: scoreError } = scoreState;
@@ -48,7 +48,7 @@ const League: React.FC = () => {
   const onSubmit = (eventId: string) => (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     setAddId(undefined);
-    dispatch(addScoreToEvent(token, id, eventId, value)).then(() => console.log("Hello"));
+    dispatch(updateEvent(token, id, eventId, { score: value })).then(() => console.log("Hello"));
     setValue("");
   };
 
@@ -90,6 +90,7 @@ const League: React.FC = () => {
             {league.events?.map((event) => (
               <ListItem>
                 {event.name} [{event.a} : {event.b}] ={">"} ({event.score})
+                <Link to={`/leagues/${id}/event/${event.id}`}>Edit</Link>
                 {scoreLoading.includes(event.id) ? (
                   <Spinner />
                 ) : Object.keys(scoreError).includes(event.id) ? (

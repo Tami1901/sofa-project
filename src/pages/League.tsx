@@ -61,6 +61,9 @@ const League: React.FC = () => {
           <Link to="/leagues">Leagues</Link>
         </ChakraLink>
         <ChakraLink>
+          <Link to={`/leagues/${id}/edit`}>Edit</Link>
+        </ChakraLink>
+        <ChakraLink>
           <Link to={`/leagues/${id}/new-event`}>Add new event</Link>
         </ChakraLink>
       </Stack>

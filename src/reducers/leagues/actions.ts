@@ -140,4 +140,33 @@ const addScoreToEvent: IAddScoreToEvent = (
   }
 };
 
-export { fetchLeagues, createLeague, fetchLeague, createEvent, addScoreToEvent };
+type IUpdateLeague = ActionCreator<t.ThunkResult<Promise<boolean>>>;
+const updateLeague: IUpdateLeague = (
+  token: string,
+  id: string,
+  data: Record<string, string>
+) => async (dispatch): Promise<boolean> => {
+  dispatch(a.LeagueUpdateLoading(id));
+
+  try {
+    const { res } = await api.patch(`/leagues/${id}`, data, false, token, true);
+
+    if (!res.ok) {
+      const json = await res.json();
+      throw new Error((json as any).error);
+    }
+
+    const { res: res2, json } = await api.get<t.League>(`/leagues/${id}`, true, token, true);
+    if (!res2.ok) {
+      throw new Error((json as any).error);
+    }
+
+    dispatch(a.LeagueUpdateSuccess(json, id));
+    return true;
+  } catch (err) {
+    dispatch(a.LeagueUpdateFail(id, err.message));
+    return false;
+  }
+};
+
+export { fetchLeagues, createLeague, fetchLeague, createEvent, addScoreToEvent, updateLeague };

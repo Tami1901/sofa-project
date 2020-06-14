@@ -72,6 +72,35 @@ export const LeagueFail = (error: string): t.ILeagueFail => {
   };
 };
 
+export const LeagueUpdateLoading = (id: string): t.ILeagueUpdateLoading => {
+  return {
+    type: t.UPDATE_LEAGUE_LOADING,
+    payload: {
+      id
+    }
+  };
+};
+
+export const LeagueUpdateSuccess = (league: t.League, leagueId: string): t.ILeagueUpdateSuccess => {
+  return {
+    type: t.UPDATE_LEAGUE_SUCCESS,
+    payload: {
+      league,
+      leagueId
+    }
+  };
+};
+
+export const LeagueUpdateFail = (id: string, error: string): t.ILeagueUpdateFail => {
+  return {
+    type: t.UPDATE_LEAGUE_FAIL,
+    payload: {
+      id,
+      error
+    }
+  };
+};
+
 export const AddEventLoading = (): t.IEventAddLoading => {
   return {
     type: t.ADD_EVENT_LOADING

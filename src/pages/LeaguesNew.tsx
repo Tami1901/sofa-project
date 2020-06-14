@@ -1,22 +1,12 @@
 import React from "react";
-import {
-  Stack,
-  Heading,
-  InputGroup,
-  InputLeftAddon,
-  Input,
-  Button,
-  FormControl,
-  Text,
-  Link as ChakraLink
-} from "@chakra-ui/core";
+import { Stack, Heading, Link as ChakraLink } from "@chakra-ui/core";
 import { Link, useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useForm } from "react-hook-form";
 
 import useThunkDispatch from "../hooks/useThunkDispatch";
 import { createLeague } from "../reducers/leagues";
 import { AppStoreState } from "../lib/reducer";
+import LeagueForm from "../components/LeagueForm";
 
 export interface NewLeagueData {
   name: string;
@@ -25,7 +15,6 @@ export interface NewLeagueData {
 }
 
 const LeaguesNew: React.FC = () => {
-  const { handleSubmit, register } = useForm();
   const history = useHistory();
 
   const { token, loading, error } = useSelector((store: AppStoreState) => ({
@@ -45,48 +34,7 @@ const LeaguesNew: React.FC = () => {
       <ChakraLink>
         <Link to="/leagues">Leagues</Link>
       </ChakraLink>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Stack spacing={3}>
-          <FormControl isReadOnly={loading}>
-            <InputGroup>
-              <InputLeftAddon children="Name" />
-              <Input
-                type="text"
-                isRequired
-                roundedLeft="0"
-                placeholder="League name"
-                name="name"
-                ref={register}
-              />
-            </InputGroup>
-            <InputGroup>
-              <InputLeftAddon children="Place" />
-              <Input
-                type="text"
-                isRequired
-                roundedLeft="0"
-                placeholder=" Place name"
-                name="place"
-                ref={register}
-              />
-            </InputGroup>
-            <InputGroup>
-              <InputLeftAddon children="Type" />
-              <Input
-                type="text"
-                roundedLeft="0"
-                placeholder="Type league"
-                name="type"
-                ref={register}
-              />
-            </InputGroup>
-          </FormControl>
-          <Button type="submit" isLoading={loading}>
-            Add league
-          </Button>
-          {error && <Text color="red.600">{error}</Text>}
-        </Stack>
-      </form>
+      <LeagueForm onSubmit={onSubmit} error={error} loading={loading} buttonText="Create" />
     </Stack>
   );
 };

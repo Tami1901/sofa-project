@@ -37,6 +37,9 @@ const Leagues: React.FC = () => {
             <ListItem key={league.id}>
               <ChakraLink>
                 <Link to={`/leagues/${league.id}`}>{league.name}</Link>
+              </ChakraLink>{" "}
+              <ChakraLink>
+                <Link to={`/leagues/${league.id}/edit`}>Edit</Link>
               </ChakraLink>
             </ListItem>
           ))}

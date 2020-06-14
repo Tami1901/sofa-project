@@ -6,7 +6,8 @@ const initStore: t.LeaguesStore = {
   leagues: [],
   add: { loading: false, error: "" },
   addEvent: { loading: false, error: "" },
-  addScore: { loading: [], error: {} }
+  addScore: { loading: [], error: {} },
+  update: { loading: [], error: {} }
 };
 
 export const reducer = (store = initStore, action: t.ILeagueAction): t.LeaguesStore => {
@@ -49,6 +50,33 @@ export const reducer = (store = initStore, action: t.ILeagueAction): t.LeaguesSt
       };
     case t.LEAGUE_FAIL:
       return { ...store, loading: false, error: action.payload.error };
+    case t.UPDATE_LEAGUE_LOADING:
+      return {
+        ...store,
+        update: {
+          loading: [...store.update.loading, action.payload.id],
+          error: { ...store.update.error, [action.payload.id]: undefined }
+        }
+      };
+    case t.UPDATE_LEAGUE_SUCCESS:
+      return {
+        ...store,
+        leagues: store.leagues.map((l) =>
+          l.id === action.payload.leagueId ? { ...l, ...action.payload.league } : l
+        ),
+        update: {
+          loading: store.update.loading.filter((a) => a !== action.payload.leagueId),
+          error: { ...store.update.error, [action.payload.leagueId]: undefined }
+        }
+      };
+    case t.UPDATE_LEAGUE_FAIL:
+      return {
+        ...store,
+        update: {
+          loading: store.update.loading.filter((a) => a !== action.payload.id),
+          error: { ...store.update.error, [action.payload.id]: action.payload.error }
+        }
+      };
     case t.ADD_EVENT_LOADING:
       return { ...store, addEvent: { loading: true, error: "" } };
     case t.ADD_EVENT_SUCCESS:

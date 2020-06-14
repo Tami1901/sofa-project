@@ -13,12 +13,16 @@ export const LEAGUE_LOADING = "LEAGUE_LOADING";
 export const LEAGUE_SUCCESS = "LEAGUE_SUCCESS";
 export const LEAGUE_FAIL = "LEAGUE_FAIL";
 
+export const UPDATE_LEAGUE_LOADING = "UPDATE_LEAGUE_LOADING";
+export const UPDATE_LEAGUE_SUCCESS = "UPDATE_LEAGUE_SUCCESS";
+export const UPDATE_LEAGUE_FAIL = "UPDATE_LEAGUE_FAIL";
+
 export const ADD_EVENT_LOADING = "ADD_EVENT_LOADING";
 export const ADD_EVENT_SUCCESS = "ADD_EVENT_SUCCESS";
 export const ADD_EVENT_FAIL = "ADD_EVENT_FAIL";
 
 export const ADD_SCORE_TO_EVENT_LOADING = "ADD_SCORE_TO_EVENT_LOADING";
-export const ADD_SCORE_TO_EVENT_SUCCESS = "ADD_SCORE_TO_EVENT_SUCCESj";
+export const ADD_SCORE_TO_EVENT_SUCCESS = "ADD_SCORE_TO_EVENT_SUCCESS";
 export const ADD_SCORE_TO_EVENT_FAIL = "ADD_SCORE_TO_EVENT_FAIL";
 
 export interface League {
@@ -45,7 +49,14 @@ export interface LeaguesStore {
   loading: boolean;
   error: string;
   leagues: League[];
-  addScore: { loading: string[]; error: Record<string, string> };
+  update: {
+    loading: string[];
+    error: Record<string, string>;
+  };
+  addScore: {
+    loading: string[];
+    error: Record<string, string>;
+  };
   add: {
     loading: boolean;
     error: string;
@@ -131,6 +142,29 @@ export interface IEventAddFail {
   };
 }
 
+export interface ILeagueUpdateLoading {
+  type: typeof UPDATE_LEAGUE_LOADING;
+  payload: {
+    id: string;
+  };
+}
+
+export interface ILeagueUpdateSuccess {
+  type: typeof UPDATE_LEAGUE_SUCCESS;
+  payload: {
+    leagueId: string;
+    league: League;
+  };
+}
+
+export interface ILeagueUpdateFail {
+  type: typeof UPDATE_LEAGUE_FAIL;
+  payload: {
+    id: string;
+    error: string;
+  };
+}
+
 export interface IAddScoreToEventLoading {
   type: typeof ADD_SCORE_TO_EVENT_LOADING;
   payload: {
@@ -170,4 +204,7 @@ export type ILeagueAction =
   | IEventAddFail
   | IAddScoreToEventLoading
   | IAddScoreToEventSuccess
-  | IAddScoreToEventFail;
+  | IAddScoreToEventFail
+  | ILeagueUpdateLoading
+  | ILeagueUpdateSuccess
+  | ILeagueUpdateFail;

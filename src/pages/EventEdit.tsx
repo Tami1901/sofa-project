@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
-import { Stack, Heading, Link as ChakraLink } from "@chakra-ui/core";
-import { Link, useParams, useHistory } from "react-router-dom";
+import { Stack, Heading } from "@chakra-ui/core";
+import { useParams, useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import useThunkDispatch from "../hooks/useThunkDispatch";
 import { AppStoreState } from "../lib/reducer";
 import { fetchLeague, updateEvent } from "../reducers/leagues";
 import EventForm from "../components/EventForm";
+import Link from "../components/Link";
 
 const EventEdit: React.FC = () => {
   const { id, eventId } = useParams();
@@ -43,9 +44,7 @@ const EventEdit: React.FC = () => {
       <Heading>
         {loading ? "Loading..." : error || !event ? "Error..." : `Edit: ${event.name}`}
       </Heading>
-      <ChakraLink>
-        <Link to={`/leagues/${id}`}>League</Link>
-      </ChakraLink>
+      <Link to={`/leagues/${id}`}>League</Link>
       <EventForm
         onSubmit={onSubmit}
         error={updateError[id]}

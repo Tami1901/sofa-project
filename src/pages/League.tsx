@@ -5,7 +5,6 @@ import {
   Heading,
   Spinner,
   Text,
-  Link as ChakraLink,
   List,
   ListItem,
   Button,
@@ -14,11 +13,12 @@ import {
   Flex,
   Box
 } from "@chakra-ui/core";
-import { Link, useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 
 import useThunkDispatch from "../hooks/useThunkDispatch";
 import { AppStoreState } from "../lib/reducer";
 import { fetchLeague, deleteLeague, updateEvent } from "../reducers/leagues";
+import Link from "../components/Link";
 
 const League: React.FC = () => {
   const { id } = useParams();

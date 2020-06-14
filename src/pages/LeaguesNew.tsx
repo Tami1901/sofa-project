@@ -1,12 +1,13 @@
 import React from "react";
-import { Stack, Heading, Link as ChakraLink } from "@chakra-ui/core";
-import { Link, useHistory } from "react-router-dom";
+import { Stack, Heading } from "@chakra-ui/core";
+import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import useThunkDispatch from "../hooks/useThunkDispatch";
 import { createLeague } from "../reducers/leagues";
 import { AppStoreState } from "../lib/reducer";
 import LeagueForm from "../components/LeagueForm";
+import Link from "../components/Link";
 
 export interface NewLeagueData {
   name: string;
@@ -31,9 +32,7 @@ const LeaguesNew: React.FC = () => {
   return (
     <Stack p={3}>
       <Heading>New League</Heading>
-      <ChakraLink>
-        <Link to="/leagues">Leagues</Link>
-      </ChakraLink>
+      <Link to="/leagues">Leagues</Link>
       <LeagueForm onSubmit={onSubmit} error={error} loading={loading} buttonText="Create" />
     </Stack>
   );

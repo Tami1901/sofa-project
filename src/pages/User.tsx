@@ -1,9 +1,9 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { Heading, Link as ChakraLink, Stack } from "@chakra-ui/core";
+import { Heading, Stack } from "@chakra-ui/core";
 
 import { AppStoreState } from "../lib/reducer";
+import Link from "../components/Link";
 
 const User: React.FC = () => {
   const { user } = useSelector((store: AppStoreState) => ({ user: store.login.user }));
@@ -14,9 +14,7 @@ const User: React.FC = () => {
     <Stack p={3}>
       <Heading>Profile</Heading>
       <Stack>
-        <ChakraLink>
-          <Link to="/leagues">Leagues</Link>
-        </ChakraLink>
+        <Link to="/leagues">Leagues</Link>
       </Stack>
       <Stack>
         <code style={{ whiteSpace: "pre" }}>{JSON.stringify(user, null, 2)}</code>

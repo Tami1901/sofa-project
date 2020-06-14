@@ -5,9 +5,8 @@ import {
   Heading,
   Spinner,
   Text,
-  Link as ChakraLink,
   Box,
-  Button,
+  Link as ChakraLink,
   Grid,
   Flex
 } from "@chakra-ui/core";
@@ -16,6 +15,7 @@ import { Link, useHistory } from "react-router-dom";
 import useThunkDispatch from "../hooks/useThunkDispatch";
 import { AppStoreState } from "../lib/reducer";
 import { fetchLeagues, deleteLeague } from "../reducers/leagues";
+import { LinkButton } from "../components/Link";
 
 const Feature: React.FC<{ title: string; place: string; type: string }> = ({
   title,
@@ -64,9 +64,9 @@ const Leagues: React.FC = () => {
           <Heading className="title">Leagues</Heading>
         </Flex>
         <Flex align="center" justify="center">
-          <Button variantColor="green">
-            <Link to="/leagues/new">New League</Link>
-          </Button>
+          <LinkButton variantColor="green" to="/leagues/new">
+            New League
+          </LinkButton>
         </Flex>
       </Flex>
       {loading ? (
@@ -77,10 +77,12 @@ const Leagues: React.FC = () => {
         // <List styleType="disc">
         <Grid templateColumns="repeat(auto-fit, minmax(300px, 1fr))" gap={6}>
           {leagues.map((league) => (
-            <Link to={`/leagues/${league.id}`}>
-              <Feature title={league.name} place={league.place} type={league.type} />
+            <>
+              <Link to={`/leagues/${league.id}`}>
+                <Feature title={league.name} place={league.place} type={league.type} />
+              </Link>
               <ChakraLink onClick={remove(league.id)}>Delete</ChakraLink>
-            </Link>
+            </>
           ))}
         </Grid>
       )}

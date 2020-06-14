@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
-import { Stack, Heading, Link as ChakraLink } from "@chakra-ui/core";
-import { Link, useParams, useHistory } from "react-router-dom";
+import { Stack, Heading } from "@chakra-ui/core";
+import { useParams, useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import { AppStoreState } from "../lib/reducer";
 import useThunkDispatch from "../hooks/useThunkDispatch";
 import { fetchLeague, createEvent } from "../reducers/leagues";
 import EventForm from "../components/EventForm";
+import Link from "../components/Link";
 
 const EventNew: React.FC = () => {
   const { id } = useParams();
@@ -40,9 +41,7 @@ const EventNew: React.FC = () => {
     <Stack p={3}>
       <Heading>Add new Event {leagueName && `to: ${leagueName}`}</Heading>
       <Stack spacing={3} isInline>
-        <ChakraLink>
-          <Link to={`/leagues/${id}`}>Back to League</Link>
-        </ChakraLink>
+        <Link to={`/leagues/${id}`}>Back to League</Link>
       </Stack>
       <EventForm onSubmit={onSubmit} loading={loading} error={error} buttonText="Create" />
     </Stack>

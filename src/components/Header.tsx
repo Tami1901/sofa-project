@@ -90,7 +90,7 @@ const Header: React.FC = () => {
         align="center"
         spacing={3}
       >
-        <Button onClick={logout} variantColor="white" variant="outline">
+        <Button onClick={logout} variantColor="green" variant="solid">
           Logout
         </Button>
         <Avatar name={username} onClick={(): void => history.push("/user")} cursor="pointer" />

@@ -4,7 +4,8 @@ const initState: t.UserStore = {
   loading: false,
   loggedIn: false,
   init: false,
-  register: { loading: false, error: "" }
+  register: { loading: false, error: "" },
+  update: { loading: false, error: "" }
 };
 
 const reducer = (state = initState, action: t.IUserLogin): t.UserStore => {
@@ -68,6 +69,37 @@ const reducer = (state = initState, action: t.IUserLogin): t.UserStore => {
       return {
         ...state,
         register: {
+          loading: false,
+          error: action.payload.error
+        }
+      };
+    }
+    case t.UPDATE_LOADING: {
+      return {
+        ...state,
+        update: {
+          loading: true,
+          error: ""
+        }
+      };
+    }
+    case t.UPDATE_SUCCESS: {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          ...action.payload.user
+        },
+        update: {
+          error: "",
+          loading: false
+        }
+      };
+    }
+    case t.UPDATE_FAIL: {
+      return {
+        ...state,
+        update: {
           loading: false,
           error: action.payload.error
         }

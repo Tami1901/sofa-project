@@ -60,3 +60,27 @@ export const RegisterFail = (error: string): t.IUserRegisterFail => {
     }
   };
 };
+
+export const UpdateLoading = (): t.IUserUpdateLoading => {
+  return {
+    type: t.UPDATE_LOADING
+  };
+};
+
+export const UpdateSuccess = (user: t.User): t.IUserUpdateSuccess => {
+  return {
+    type: t.UPDATE_SUCCESS,
+    payload: {
+      user
+    }
+  };
+};
+
+export const UpdateFail = (error: string): t.IUserUpdateFail => {
+  return {
+    type: t.UPDATE_FAIL,
+    payload: {
+      error
+    }
+  };
+};

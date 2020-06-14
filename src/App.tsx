@@ -12,11 +12,12 @@ import Leagues from "./pages/leagues/Leagues";
 import LeaguesNew from "./pages/leagues/LeaguesNew";
 import League from "./pages/leagues/League";
 import EventNew from "./pages/events/EventNew";
-import User from "./pages/User";
+import User from "./pages/profile/User";
 import LeagueEdit from "./pages/leagues/LeaguesEdit";
 import EventEdit from "./pages/events/EventEdit";
 import PrivateRoute from "./components/PrivateRoute";
 import Header from "./components/Header";
+import EditProfile from "./pages/profile/Edit";
 
 const App: React.FC = () => {
   return (
@@ -25,6 +26,7 @@ const App: React.FC = () => {
       <BrowserRouter>
         <Header />
         <Switch>
+          <PrivateRoute path="/user/edit" component={EditProfile} exact />
           <PrivateRoute path="/user" component={User} exact />
           <PrivateRoute path="/leagues/:id/edit" component={LeagueEdit} />
           <PrivateRoute path="/leagues/:id/event/:eventId" component={EventEdit} />

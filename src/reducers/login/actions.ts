@@ -95,4 +95,32 @@ const registerUser: ActionCreator<t.ThunkResult<Promise<boolean>>> = (data) => a
   return false;
 };
 
-export { loginAction, loginInit, registerUser };
+const updateUser: ActionCreator<t.ThunkResult<Promise<boolean>>> = (token: string, data) => async (
+  dispatch
+): Promise<boolean> => {
+  dispatch(a.UpdateLoading());
+
+  try {
+    const { res } = await api.patch(`/users/me`, data, false, token);
+
+    if (!res.ok) {
+      const json = await res.json();
+      throw new Error((json as any).error);
+    }
+
+    const { res: res2, json } = await api.get<t.User>("/users/me", true, token);
+
+    if (!res2.ok) {
+      throw new Error((json as any).error);
+    }
+
+    dispatch(a.UpdateSuccess(json));
+    return true;
+  } catch (error) {
+    dispatch(a.UpdateFail(error.message));
+  }
+
+  return false;
+};
+
+export { loginAction, loginInit, registerUser, updateUser };

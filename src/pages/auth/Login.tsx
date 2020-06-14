@@ -140,7 +140,7 @@ const Login: React.FC = () => {
         </Flex>
       </form>
       <Text mt={8}>
-        You don&lsquo;t have an account? Register <Link to="/register">here</Link>
+        You don&lsquo;t have an account? <Link to="/register">Register here</Link>
       </Text>
     </Stack>
   );

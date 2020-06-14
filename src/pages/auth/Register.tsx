@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import styled from "@emotion/styled";
 import { useForm } from "react-hook-form";
 import {
   Input,
@@ -134,7 +133,7 @@ const Register: React.FC = () => {
         </Flex>
       </form>
       <Text mt={8}>
-        You already have an account? Login <Link to="/login">here</Link>
+        You already have an account? <Link to="/login">Login here</Link>
       </Text>
     </Stack>
   );

@@ -51,7 +51,7 @@ const Header: React.FC = () => {
     <Flex
       as="nav"
       align="center"
-      justify="space-between"
+      justify="space-evenly"
       wrap="wrap"
       padding="0.75rem"
       bg="rgb(248, 136, 61)"
@@ -78,9 +78,9 @@ const Header: React.FC = () => {
         alignItems="center"
         flexGrow={1}
       >
-        <MenuItems>Docs</MenuItems>
-        <MenuItems>Examples</MenuItems>
-        <MenuItems>Blog</MenuItems>
+        <MenuItems>
+          <Link to="/leagues">Leagues</Link>
+        </MenuItems>
       </Box>
 
       <Stack

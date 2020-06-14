@@ -91,11 +91,6 @@ const Login: React.FC = () => {
         <FormControl isReadOnly={loading} justifyContent="center">
           <Stack spacing={4} px={2}>
             <InputGroup>
-              <InputLeftElement children={<Icon name="email" color="gray.300" />} />
-              <Input type="email" placeholder="email" name="email" ref={register} isRequired />
-            </InputGroup>
-
-            <InputGroup>
               <InputLeftElement children={<Icon name="check" color="gray.300" />} />
               <Input type="text" placeholder="Username" name="username" ref={register} isRequired />
             </InputGroup>

@@ -7,7 +7,6 @@ import LeagueForm from "../../components/LeagueForm";
 import useThunkDispatch from "../../hooks/useThunkDispatch";
 import { AppStoreState } from "../../lib/reducer";
 import { fetchLeague, updateLeague } from "../../reducers/leagues";
-import Link from "../../components/Link";
 
 const LeagueEdit: React.FC = () => {
   const { id } = useParams();

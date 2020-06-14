@@ -7,7 +7,6 @@ import { AppStoreState } from "../../lib/reducer";
 import useThunkDispatch from "../../hooks/useThunkDispatch";
 import { fetchLeague, createEvent } from "../../reducers/leagues";
 import EventForm from "../../components/EventForm";
-import Link from "../../components/Link";
 
 const EventNew: React.FC = () => {
   const { id } = useParams();

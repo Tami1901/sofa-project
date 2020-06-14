@@ -9,7 +9,16 @@ import {
   useHistory,
   Link
 } from "react-router-dom";
-import { ThemeProvider, CSSReset, Button } from "@chakra-ui/core";
+import {
+  ThemeProvider,
+  CSSReset,
+  Button,
+  Flex,
+  Heading,
+  Stack,
+  Box,
+  Avatar
+} from "@chakra-ui/core";
 import { useSelector } from "react-redux";
 
 import theme from "./theme";
@@ -51,10 +60,13 @@ const PrivateRoute: React.FC<RouteProps> = (props) => {
   return <Route {...props} />;
 };
 
-const Logout: React.FC = () => {
+const Header: React.FC = () => {
   const history = useHistory();
   const dispatch = useThunkDispatch();
-  const { loggedIn } = useSelector((store: AppStoreState) => ({ loggedIn: store.login.loggedIn }));
+  const { loggedIn, username } = useSelector((store: AppStoreState) => ({
+    loggedIn: store.login.loggedIn,
+    username: store.login.username
+  }));
 
   const logout = (): void => {
     localStorage.removeItem("token");
@@ -64,11 +76,34 @@ const Logout: React.FC = () => {
 
   if (loggedIn) {
     return (
-      <>
-        <Button onClick={logout}>Logout</Button>
-        <Link to="/user">Profile</Link>
-        <Link to="/leagues">Home</Link>
-      </>
+      <Flex
+        as="nav"
+        align="center"
+        justify="space-between"
+        wrap="wrap"
+        padding="0.75rem"
+        bg="rgb(248, 136, 61)"
+        color="white"
+      >
+        <Flex align="center" mr={5}>
+          <Heading as="h1" size="lg">
+            TENNIS LEAGUE
+          </Heading>
+        </Flex>
+        <Stack isInline align="center" spacing={3}>
+          <Flex align="end">
+            <Button onClick={logout} variantColor="white" variant="outline">
+              Logout
+            </Button>
+          </Flex>
+
+          <Box>
+            <Link to="/user">
+              <Avatar name={username} />
+            </Link>
+          </Box>
+        </Stack>
+      </Flex>
     );
   }
 
@@ -80,7 +115,7 @@ const App: React.FC = () => {
     <ThemeProvider theme={theme}>
       <CSSReset />
       <BrowserRouter>
-        <Logout />
+        <Header />
         <Switch>
           <PrivateRoute path="/user" component={User} exact />
           <PrivateRoute path="/leagues/:id/edit" component={LeagueEdit} />

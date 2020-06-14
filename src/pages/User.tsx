@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { Heading, Link as ChakraLink, Stack, Text } from "@chakra-ui/core";
+import { Heading, Link as ChakraLink, Stack } from "@chakra-ui/core";
 
 import { AppStoreState } from "../lib/reducer";
 
@@ -19,7 +19,7 @@ const User: React.FC = () => {
         </ChakraLink>
       </Stack>
       <Stack>
-        <Text>{JSON.stringify(user)}</Text>
+        <code style={{ whiteSpace: "pre" }}>{JSON.stringify(user, null, 2)}</code>
       </Stack>
     </Stack>
   );

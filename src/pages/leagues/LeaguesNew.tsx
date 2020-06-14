@@ -3,11 +3,11 @@ import { Stack, Heading } from "@chakra-ui/core";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import useThunkDispatch from "../hooks/useThunkDispatch";
-import { createLeague } from "../reducers/leagues";
-import { AppStoreState } from "../lib/reducer";
-import LeagueForm from "../components/LeagueForm";
-import Link from "../components/Link";
+import useThunkDispatch from "../../hooks/useThunkDispatch";
+import { createLeague } from "../../reducers/leagues";
+import { AppStoreState } from "../../lib/reducer";
+import LeagueForm from "../../components/LeagueForm";
+import Link from "../../components/Link";
 
 export interface NewLeagueData {
   name: string;

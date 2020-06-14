@@ -3,11 +3,11 @@ import { Stack, Heading } from "@chakra-ui/core";
 import { useParams, useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import useThunkDispatch from "../hooks/useThunkDispatch";
-import { AppStoreState } from "../lib/reducer";
-import { fetchLeague, updateEvent } from "../reducers/leagues";
-import EventForm from "../components/EventForm";
-import Link from "../components/Link";
+import useThunkDispatch from "../../hooks/useThunkDispatch";
+import { AppStoreState } from "../../lib/reducer";
+import { fetchLeague, updateEvent } from "../../reducers/leagues";
+import EventForm from "../../components/EventForm";
+import Link from "../../components/Link";
 
 const EventEdit: React.FC = () => {
   const { id, eventId } = useParams();

@@ -1,5 +1,5 @@
 import { ActionCreator } from "redux";
-import { NewLeagueData } from "../../pages/LeaguesNew";
+import { NewLeagueData } from "../../pages/leagues/LeaguesNew";
 
 import * as api from "../../services/http";
 

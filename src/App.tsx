@@ -1,116 +1,22 @@
 import React from "react";
-import {
-  BrowserRouter,
-  Switch,
-  Route,
-  Redirect,
-  RouteProps,
-  useLocation,
-  useHistory
-} from "react-router-dom";
-import {
-  ThemeProvider,
-  CSSReset,
-  Button,
-  Flex,
-  Heading,
-  Stack,
-  Box,
-  Avatar
-} from "@chakra-ui/core";
-import { useSelector } from "react-redux";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { ThemeProvider, CSSReset } from "@chakra-ui/core";
 
 import theme from "./theme";
 
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Leagues from "./pages/Leagues";
-import { AppStoreState } from "./lib/reducer";
-import LeaguesNew from "./pages/LeaguesNew";
-import League from "./pages/League";
-import EventNew from "./pages/EventNew";
-import useThunkDispatch from "./hooks/useThunkDispatch";
-import { LogoutAction } from "./reducers/login";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
+import Leagues from "./pages/leagues/Leagues";
+import LeaguesNew from "./pages/leagues/LeaguesNew";
+import League from "./pages/leagues/League";
+import EventNew from "./pages/events/EventNew";
 import User from "./pages/User";
-import LeagueEdit from "./pages/LeaguesEdit";
-import EventEdit from "./pages/EventEdit";
-import Link from "./components/Link";
-
-const PrivateRoute: React.FC<RouteProps> = (props) => {
-  const location = useLocation();
-
-  const { token, loggedIn } = useSelector((state: AppStoreState) => ({
-    token: state.login.token,
-    loggedIn: state.login.loggedIn
-  }));
-
-  if (!token || !loggedIn) {
-    return (
-      <Redirect
-        to={{
-          pathname: "/login",
-          state: { from: location }
-        }}
-      />
-    );
-  }
-
-  return <Route {...props} />;
-};
-
-const Header: React.FC = () => {
-  const history = useHistory();
-  const dispatch = useThunkDispatch();
-  const { loggedIn, username } = useSelector((store: AppStoreState) => ({
-    loggedIn: store.login.loggedIn,
-    username: store.login.username
-  }));
-
-  const logout = (): void => {
-    localStorage.removeItem("token");
-    dispatch(LogoutAction());
-    history.push("/");
-  };
-
-  if (loggedIn) {
-    return (
-      <Flex
-        as="nav"
-        align="center"
-        justify="space-between"
-        wrap="wrap"
-        padding="0.75rem"
-        bg="rgb(248, 136, 61)"
-        color="white"
-      >
-        <Flex align="center" mr={5}>
-          <Link to="/">
-            <Heading as="h1" size="lg">
-              TENNIS LEAGUE
-            </Heading>
-          </Link>
-        </Flex>
-        <Stack isInline align="center" spacing={3}>
-          <Flex align="end">
-            <Button onClick={logout} variantColor="white" variant="outline">
-              Logout
-            </Button>
-          </Flex>
-
-          <Box>
-            <Link to="/user">
-              <Avatar name={username} />
-            </Link>
-          </Box>
-        </Stack>
-      </Flex>
-    );
-  }
-
-  return null;
-};
+import LeagueEdit from "./pages/leagues/LeaguesEdit";
+import EventEdit from "./pages/events/EventEdit";
+import PrivateRoute from "./components/PrivateRoute";
+import Header from "./components/Header";
 
 const App: React.FC = () => {
   return (

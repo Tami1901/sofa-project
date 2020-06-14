@@ -15,10 +15,10 @@ import {
 } from "@chakra-ui/core";
 import { useParams, useHistory } from "react-router-dom";
 
-import useThunkDispatch from "../hooks/useThunkDispatch";
-import { AppStoreState } from "../lib/reducer";
-import { fetchLeague, deleteLeague, updateEvent } from "../reducers/leagues";
-import Link from "../components/Link";
+import useThunkDispatch from "../../hooks/useThunkDispatch";
+import { AppStoreState } from "../../lib/reducer";
+import { fetchLeague, deleteLeague, updateEvent } from "../../reducers/leagues";
+import Link from "../../components/Link";
 
 const League: React.FC = () => {
   const { id } = useParams();

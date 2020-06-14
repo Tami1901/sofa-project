@@ -15,10 +15,10 @@ import { useSelector } from "react-redux";
 import styled from "@emotion/styled";
 import { useForm } from "react-hook-form";
 
-import { loginAction, loginInit } from "../reducers/login";
-import useThunkDispatch from "../hooks/useThunkDispatch";
-import { AppStoreState } from "../lib/reducer";
-import Link from "../components/Link";
+import { loginAction, loginInit } from "../../reducers/login";
+import useThunkDispatch from "../../hooks/useThunkDispatch";
+import { AppStoreState } from "../../lib/reducer";
+import Link from "../../components/Link";
 
 const Container = styled.div`
   background-color: rgb(248, 136, 61);

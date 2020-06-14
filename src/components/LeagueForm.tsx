@@ -9,7 +9,7 @@ import {
   Button,
   Text
 } from "@chakra-ui/core";
-import { NewLeagueData } from "../pages/LeaguesNew";
+import { NewLeagueData } from "../pages/leagues/LeaguesNew";
 
 interface LeagueFormProps {
   onSubmit: (data: NewLeagueData) => void;

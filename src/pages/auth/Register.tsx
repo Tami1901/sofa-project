@@ -11,7 +11,7 @@ import {
   InputRightElement,
   Text
 } from "@chakra-ui/core";
-import Link from "../components/Link";
+import Link from "../../components/Link";
 
 const Container = styled.div`
   background-color: rgb(248, 136, 61);

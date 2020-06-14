@@ -12,10 +12,10 @@ import {
 } from "@chakra-ui/core";
 import { Link, useHistory } from "react-router-dom";
 
-import useThunkDispatch from "../hooks/useThunkDispatch";
-import { AppStoreState } from "../lib/reducer";
-import { fetchLeagues, deleteLeague } from "../reducers/leagues";
-import { LinkButton } from "../components/Link";
+import useThunkDispatch from "../../hooks/useThunkDispatch";
+import { AppStoreState } from "../../lib/reducer";
+import { fetchLeagues, deleteLeague } from "../../reducers/leagues";
+import { LinkButton } from "../../components/Link";
 
 const Feature: React.FC<{ title: string; place: string; type: string }> = ({
   title,

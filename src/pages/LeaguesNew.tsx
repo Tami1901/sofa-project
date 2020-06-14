@@ -10,7 +10,7 @@ import {
   Text,
   Link as ChakraLink
 } from "@chakra-ui/core";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 
@@ -26,6 +26,7 @@ export interface NewLeagueData {
 
 const LeaguesNew: React.FC = () => {
   const { handleSubmit, register } = useForm();
+  const history = useHistory();
 
   const { token, loading, error } = useSelector((store: AppStoreState) => ({
     token: store.login.token,
@@ -35,7 +36,7 @@ const LeaguesNew: React.FC = () => {
   const dispatch = useThunkDispatch();
 
   const onSubmit = (data: NewLeagueData): void => {
-    dispatch(createLeague(token, data)).then((id) => console.log(id));
+    dispatch(createLeague(token, data)).then((id) => history.push(`/leagues/${id}`));
   };
 
   return (

@@ -1,6 +1,8 @@
 import { ActionCreator } from "redux";
 import { NewLeagueData } from "../../pages/LeaguesNew";
 
+import * as api from "../../services/http";
+
 import * as t from "./types";
 import * as a from "./reduxActions";
 
@@ -13,23 +15,12 @@ const fetchLeagues: IFetchLeagues = (token: string, loading: boolean) => async (
   }
 
   try {
-    const res = await fetch(`https://private-leagues-api.herokuapp.com/api/leagues`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-        "X-App-Key": "tamara"
-      }
-    });
-
-    const data = await res.json();
-
+    const { res, json } = await api.get<t.League[]>(`/leagues`, true, token, true);
     if (!res.ok) {
-      throw new Error(data.error);
+      throw new Error((json as any).error);
     }
 
-    const leagues: t.League[] = data as t.League[];
-    dispatch(a.LeaguesSuccess(leagues));
+    dispatch(a.LeaguesSuccess(json));
   } catch (err) {
     dispatch(a.LeaguesFail(err.message));
   }
@@ -42,43 +33,19 @@ const createLeague: ICreate = (token: string, data: NewLeagueData) => async (
   dispatch(a.AddLeaguesLoading());
 
   try {
-    const res = await fetch(`https://private-leagues-api.herokuapp.com/api/leagues`, {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-        "X-App-Key": "tamara"
-      }
-    });
-
-    const resData = await res.json();
-
+    const { res, json } = await api.post(`/leagues`, data as any, true, token, true);
     if (!res.ok) {
-      throw new Error(resData.error);
+      throw new Error((json as any).error);
     }
 
-    const { id } = resData as { id: string };
+    const { id } = json as { id: string };
+    const { res: res2, json: json2 } = await api.get<t.League>(`/leagues/${id}`, true, token, true);
 
-    const newLeagueRes = await fetch(
-      `https://private-leagues-api.herokuapp.com/api/leagues/${id}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-          "X-App-Key": "tamara"
-        }
-      }
-    );
-
-    const leagueRes = await newLeagueRes.json();
-
-    if (!newLeagueRes.ok) {
-      throw new Error(leagueRes.error);
+    if (!res2.ok) {
+      throw new Error((json2 as any).error);
     }
 
-    dispatch(a.AddLeaguesSuccess(leagueRes));
+    dispatch(a.AddLeaguesSuccess(json2));
 
     return id;
   } catch (err) {
@@ -95,22 +62,12 @@ const fetchLeague: IGet = (token: string, id: string, exists: boolean) => async 
   }
 
   try {
-    const res = await fetch(`https://private-leagues-api.herokuapp.com/api/leagues/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-        "X-App-Key": "tamara"
-      }
-    });
-
-    const resData = await res.json();
-
+    const { res, json } = await api.get<t.League>(`/leagues/${id}`, true, token, true);
     if (!res.ok) {
-      throw new Error(resData.error);
+      throw new Error((json as any).error);
     }
 
-    dispatch(a.LeagueSuccess(resData));
+    dispatch(a.LeagueSuccess(json));
     return true;
   } catch (err) {
     dispatch(a.LeagueFail(err.message));
@@ -127,46 +84,25 @@ const createEvent: ICreateEvent = (
   dispatch(a.AddEventLoading());
 
   try {
-    const res = await fetch(
-      `https://private-leagues-api.herokuapp.com/api/leagues/${leagueId}/events`,
-      {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-          "X-App-Key": "tamara"
-        }
-      }
-    );
-
-    const resData = await res.json();
-
+    const { res, json } = await api.post(`/leagues/${leagueId}/events`, data, true, token, true);
     if (!res.ok) {
-      throw new Error(resData.error);
+      throw new Error((json as any).error);
     }
 
-    const { id } = resData as { id: string };
+    const { id } = json as { id: string };
 
-    const newEventRes = await fetch(
-      `https://private-leagues-api.herokuapp.com/api/leagues/${leagueId}/events/${id}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-          "X-App-Key": "tamara"
-        }
-      }
+    const { res: resNew, json: jsonNew } = await api.get<t.IEvent>(
+      `/leagues/${leagueId}/events/${id}`,
+      true,
+      token,
+      true
     );
 
-    const newEvent = await newEventRes.json();
-
-    if (!newEventRes.ok) {
-      throw new Error(newEvent.error);
+    if (!resNew.ok) {
+      throw new Error((jsonNew as any).error);
     }
 
-    dispatch(a.AddEventSuccess(leagueId, newEvent));
+    dispatch(a.AddEventSuccess(leagueId, jsonNew));
 
     return true;
   } catch (err) {
@@ -185,17 +121,12 @@ const addScoreToEvent: IAddScoreToEvent = (
   dispatch(a.AddScoreToEventLoading(eventId));
 
   try {
-    const res = await fetch(
-      `https://private-leagues-api.herokuapp.com/api/leagues/${leagueId}/events/${eventId}`,
-      {
-        method: "PATCH",
-        body: JSON.stringify({ score }),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-          "X-App-Key": "tamara"
-        }
-      }
+    const { res } = await api.patch(
+      `/leagues/${leagueId}/events/${eventId}`,
+      { score },
+      false,
+      token,
+      true
     );
 
     if (!res.ok) {

@@ -2,6 +2,13 @@ import { ActionCreator } from "redux";
 import * as t from "./types";
 import * as a from "./reduxActions";
 
+import * as api from "../../services/http";
+
+interface LoginActionResponse {
+  token: string;
+  user: t.User;
+}
+
 const loginAction: ActionCreator<t.ThunkResult<Promise<boolean>>> = (
   username: string,
   password: string,
@@ -10,24 +17,14 @@ const loginAction: ActionCreator<t.ThunkResult<Promise<boolean>>> = (
   dispatch(a.LoginStart(username));
 
   try {
-    const res = await fetch(`https://private-leagues-api.herokuapp.com/api/login`, {
-      method: "POST",
-      body: JSON.stringify({ username, password }),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
-
-    let resData = await res.json();
+    const { res, json } = await api.post<LoginActionResponse>(
+      `/login`,
+      { username, password },
+      true
+    );
 
     if (res.ok) {
-      resData = resData as {
-        token: string;
-        user: {
-          user: { username: string; extra1: string; extra2: string; extra: string; id: string };
-        };
-      };
-      const { token, user } = resData;
+      const { token, user } = json;
       if (keep) {
         localStorage.setItem("token", token);
       }
@@ -35,7 +32,7 @@ const loginAction: ActionCreator<t.ThunkResult<Promise<boolean>>> = (
       return true;
     }
 
-    throw new Error(resData.error);
+    throw new Error((json as any).error);
   } catch (err) {
     dispatch(a.LoginFail(err.message));
     return false;
@@ -54,13 +51,7 @@ const loginInit: ActionCreator<t.ThunkResult<Promise<boolean>>> = () => async (
 
     dispatch(a.LoginInit());
 
-    const res = await fetch(`https://private-leagues-api.herokuapp.com/api/check-token`, {
-      method: "POST",
-      body: JSON.stringify({ token }),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
+    const { res } = await api.post(`/check-token`, { token }, false);
 
     if (!res.ok) {
       const resData = await res.json();
@@ -68,27 +59,13 @@ const loginInit: ActionCreator<t.ThunkResult<Promise<boolean>>> = () => async (
       throw new Error(resData.error);
     }
 
-    const res2 = await fetch(`https://private-leagues-api.herokuapp.com/api/users/me`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      }
-    });
-
-    let resData2 = await res2.json();
+    const { res: res2, json } = await api.get<t.User>("/users/me", true, token);
 
     if (!res2.ok) {
-      throw new Error(resData2.error);
+      throw new Error((json as any).error);
     }
 
-    resData2 = resData2 as {
-      username: string;
-      id: string;
-      [key: string]: string;
-    };
-
-    dispatch(a.LoginSuccess(token, resData2));
+    dispatch(a.LoginSuccess(token, json));
     return true;
   } catch (err) {
     dispatch(a.LoginFail(err.message));

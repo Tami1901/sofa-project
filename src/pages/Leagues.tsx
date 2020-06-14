@@ -1,15 +1,35 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Stack, List, ListItem, Heading, Spinner, Text, Link as ChakraLink } from "@chakra-ui/core";
-import { Link, useHistory } from "react-router-dom";
+import {
+  Stack,
+  List,
+  ListItem,
+  Heading,
+  Spinner,
+  Text,
+  Link as ChakraLink,
+  Box,
+  Button,
+  Grid,
+  Flex
+} from "@chakra-ui/core";
+import { Link } from "react-router-dom";
 
 import useThunkDispatch from "../hooks/useThunkDispatch";
 import { AppStoreState } from "../lib/reducer";
 import { fetchLeagues, deleteLeague } from "../reducers/leagues";
 
-const Leagues: React.FC = () => {
-  const history = useHistory();
+function Feature({ title, place, type, ...rest }) {
+  return (
+    <Box p={5} shadow="md" borderWidth="1px" {...rest}>
+      <Heading fontSize="xl">{title}</Heading>
+      <Text mt={4}>Place: {place}</Text>
+      <Text mt={4}>Type: {type}</Text>
+    </Box>
+  );
+}
 
+const Leagues: React.FC = () => {
   const dispatch = useThunkDispatch();
   const { loading, error, leagues, token } = useSelector((store: AppStoreState) => ({
     loading: store.leagues.loading,
@@ -19,6 +39,7 @@ const Leagues: React.FC = () => {
   }));
 
   useEffect(() => {
+    // dispatch(fetchLeagues(token, leagues.length === 0));
     dispatch(fetchLeagues(token, true));
   }, [dispatch]);
 
@@ -33,28 +54,30 @@ const Leagues: React.FC = () => {
 
   return (
     <Stack p={3}>
-      <Heading>Leagues</Heading>
-      <ChakraLink>
-        <Link to="/leagues/new">New League</Link>
-      </ChakraLink>
+      <Flex justifyContent="space-between">
+        <Flex align="flex-end">
+          <Heading className="title">Leagues</Heading>
+        </Flex>
+        <Flex align="center" justify="center">
+          <Button variantColor="green">
+            <Link to="/leagues/new">New League</Link>
+          </Button>
+        </Flex>
+      </Flex>
       {loading ? (
         <Spinner />
       ) : error ? (
         <Text>{error}</Text>
       ) : (
-        <List styleType="disc">
+        // <List styleType="disc">
+        <Grid templateColumns="repeat(auto-fit, minmax(300px, 1fr))" gap={6}>
           {leagues.map((league) => (
-            <ListItem key={league.id}>
-              <ChakraLink>
-                <Link to={`/leagues/${league.id}`}>{league.name}</Link>
-              </ChakraLink>{" "}
-              <ChakraLink>
-                <Link to={`/leagues/${league.id}/edit`}>Edit</Link>
-              </ChakraLink>{" "}
+            <Link to={`/leagues/${league.id}`}>
+              <Feature title={league.name} place={league.place} type={league.type} />
               <ChakraLink onClick={remove(league.id)}>Delete</ChakraLink>
-            </ListItem>
+            </Link>
           ))}
-        </List>
+        </Grid>
       )}
     </Stack>
   );

@@ -10,9 +10,12 @@ import {
   ListItem,
   Button,
   FormControl,
-  Input
+  Input,
+  Flex,
+  Box,
+  Image
 } from "@chakra-ui/core";
-import { Link, useParams, useHistory } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import useThunkDispatch from "../hooks/useThunkDispatch";
 import { AppStoreState } from "../lib/reducer";
@@ -20,7 +23,6 @@ import { fetchLeague, updateEvent, deleteLeague } from "../reducers/leagues";
 
 const League: React.FC = () => {
   const { id } = useParams();
-  const history = useHistory();
 
   const [addId, setAddId] = useState<string | undefined>();
   const [value, setValue] = useState<string | undefined>();
@@ -31,7 +33,7 @@ const League: React.FC = () => {
     error: store.leagues.error,
     league: store.leagues.leagues.find((l) => l.id === id) || undefined,
     token: store.login.token,
-    scoreState: store.leagues.updateEvent
+    scoreState: store.leagues.addScore
   }));
 
   const { loading: scoreLoading, error: scoreError } = scoreState;
@@ -48,36 +50,35 @@ const League: React.FC = () => {
   const onSubmit = (eventId: string) => (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     setAddId(undefined);
-    dispatch(updateEvent(token, id, eventId, { score: value })).then(() => console.log("Hello"));
+    dispatch(addScoreToEvent(token, id, eventId, value)).then(() => console.log("Hello"));
     setValue("");
   };
 
-  const onDelete = (): void => {
-    // eslint-disable-next-line no-alert
-    if (window.confirm("Are you sure?")) {
-      dispatch(deleteLeague(token, id)).then(() => {
-        history.push(`/leagues`);
-      });
-    }
-  };
+  console.log(scoreError);
 
   return (
     <Stack p={3}>
-      <Heading>{loading ? "Loading..." : error || !league ? "Error..." : league.name}</Heading>
-      <Stack spacing={3} isInline>
-        <ChakraLink>
-          <Link to="/leagues">Leagues</Link>
-        </ChakraLink>
-        <ChakraLink>
-          <Link to={`/leagues/${id}/edit`}>Edit</Link>
-        </ChakraLink>
-        <ChakraLink>
-          <Link to={`/leagues/${id}/new-event`}>Add new event</Link>
-        </ChakraLink>
-        <Button color="red.600" onClick={onDelete}>
-          Delete
-        </Button>
-      </Stack>
+      <Flex justifyContent="space-between">
+        <Flex align="flex-end">
+          <Heading className="title">
+            {loading ? "Loading..." : error || !league ? "Error..." : league.name}
+          </Heading>
+        </Flex>
+        <Flex align="center" justify="center">
+          <Stack spacing={4} isInline>
+            <ChakraLink onClick={remove(league.id)}>Delete</ChakraLink>
+            <Flex align="end">
+              <Link to="/leagues">
+                <Button>Leagues</Button>
+              </Link>
+            </Flex>
+            <Link to={`/leagues/${id}/new-event`}>
+              <Button>Add new event</Button>
+            </Link>
+          </Stack>
+        </Flex>
+      </Flex>
+
       <hr />
       {loading ? (
         <Spinner />
@@ -85,33 +86,44 @@ const League: React.FC = () => {
         <Text>{error}</Text>
       ) : league ? (
         <Stack>
-          <Text>Place: {league.place}</Text>
-          <List listStyleType="'💩 '">
+          <Text fontSize="30px" textDecoration="underline rgb(248, 136, 61)">
+            Place: {league.place}
+          </Text>
+          <List listStyleType="'🎾 '">
             {league.events?.map((event) => (
               <ListItem>
-                {event.name} [{event.a} : {event.b}] ={">"} ({event.score})
                 <Link to={`/leagues/${id}/event/${event.id}`}>Edit</Link>
-                {scoreLoading.includes(event.id) ? (
-                  <Spinner />
-                ) : Object.keys(scoreError).includes(event.id) ? (
-                  <Text color="red.600">{scoreError[event.id]}</Text>
-                ) : (
-                  event.score === undefined && (
-                    <>
-                      <Button onClick={addScore(event.id)}>
-                        {event.id === addId ? "Hide score" : "Show score"}
-                      </Button>
-                      {event.id === addId && (
-                        <form onSubmit={onSubmit(event.id)}>
-                          <FormControl>
-                            <Input onChange={(e): void => setValue(e.target.value)} value={value} />
-                          </FormControl>
-                          <Button type="submit">Add</Button>
-                        </form>
-                      )}
-                    </>
-                  )
-                )}
+                <Flex>
+                  <Box bg="#FBD38D" marginBottom="2" width="40%" borderRadius="5px">
+                    {event.name} [{event.a} : {event.b}] ={">"} ({event.score})
+                  </Box>
+                  <Box>
+                    {scoreLoading.includes(event.id) ? (
+                      <Spinner />
+                    ) : Object.keys(scoreError).includes(event.id) ? (
+                      <Text color="red.600">{scoreError[event.id]}</Text>
+                    ) : (
+                      event.score === undefined && (
+                        <>
+                          <Button onClick={addScore(event.id)}>
+                            {event.id === addId ? "Hide score" : "Show score"}
+                          </Button>
+                          {event.id === addId && (
+                            <form onSubmit={onSubmit(event.id)}>
+                              <FormControl>
+                                <Input
+                                  onChange={(e): void => setValue(e.target.value)}
+                                  value={value}
+                                />
+                              </FormControl>
+                              <Button type="submit">Add</Button>
+                            </form>
+                          )}
+                        </>
+                      )
+                    )}
+                  </Box>
+                </Flex>
               </ListItem>
             ))}
           </List>

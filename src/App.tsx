@@ -6,7 +6,8 @@ import {
   Redirect,
   RouteProps,
   useLocation,
-  useHistory
+  useHistory,
+  Link
 } from "react-router-dom";
 import { ThemeProvider, CSSReset, Button } from "@chakra-ui/core";
 import { useSelector } from "react-redux";
@@ -25,6 +26,7 @@ import League from "./pages/League";
 import EventNew from "./pages/EventNew";
 import useThunkDispatch from "./hooks/useThunkDispatch";
 import { LogoutAction } from "./reducers/login";
+import User from "./pages/User";
 
 const PrivateRoute: React.FC<RouteProps> = (props) => {
   const location = useLocation();
@@ -60,7 +62,13 @@ const Logout: React.FC = () => {
   };
 
   if (loggedIn) {
-    return <Button onClick={logout}>Logout</Button>;
+    return (
+      <>
+        <Button onClick={logout}>Logout</Button>
+        <Link to="/user">Profile</Link>
+        <Link to="/leagues">Home</Link>
+      </>
+    );
   }
 
   return null;
@@ -73,6 +81,7 @@ const App: React.FC = () => {
       <BrowserRouter>
         <Logout />
         <Switch>
+          <PrivateRoute path="/user" component={User} exact />
           <PrivateRoute path="/leagues/:id/new-event" component={EventNew} />
           <PrivateRoute path="/leagues/new" component={LeaguesNew} exact />
           <PrivateRoute path="/leagues/:id" component={League} />

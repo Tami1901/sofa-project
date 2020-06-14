@@ -7,12 +7,20 @@ export const LOGIN_FAIL = "LOGIN_FAIL";
 export const LOGIN_INIT = "LOGIN_INIT";
 export const LOGOUT = "LOGOUT";
 
+export interface User {
+  id: string;
+  username: string;
+  [key: string]: string;
+}
+
 export interface UserStore {
   loading: boolean;
+  init: boolean;
   username?: string;
   token?: string;
   error?: string;
   loggedIn: boolean;
+  user?: User;
 }
 
 export interface IUserLoginStart {
@@ -26,6 +34,7 @@ export interface IUserLoginSuccess {
   type: typeof LOGIN_SUCCESS;
   payload: {
     token: string;
+    user: User;
   };
 }
 
@@ -38,10 +47,6 @@ export interface IUserLoginFail {
 
 export interface IUserLoginInit {
   type: typeof LOGIN_INIT;
-  payload: {
-    token: string | null;
-    isLoggedIn: boolean;
-  };
 }
 
 export interface IUserLogout {

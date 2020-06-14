@@ -7,14 +7,15 @@ import {
   Icon,
   InputRightElement,
   Checkbox,
-  Text
+  Text,
+  Heading
 } from "@chakra-ui/core";
 import { useHistory, Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import styled from "@emotion/styled";
 import { useForm } from "react-hook-form";
 
-import { loginAction, LoginInit } from "../reducers/login";
+import { loginAction, loginInit } from "../reducers/login";
 import useThunkDispatch from "../hooks/useThunkDispatch";
 import { AppStoreState } from "../lib/reducer";
 
@@ -58,22 +59,34 @@ const Login: React.FC = () => {
   const [show, setShow] = useState(false);
   const handleClick = (): void => setShow(!show);
 
+  const [showLogging, setShowLogging] = useState<boolean>(false);
+
   const history = useHistory();
   const location = useLocation();
 
   const dispatch = useThunkDispatch();
-  const { error, loading, loggedIn, token } = useSelector((store: AppStoreState) => ({
+  const { error, loading, loggedIn, token, init } = useSelector((store: AppStoreState) => ({
     error: store.login.error,
     loading: store.login.loading,
     loggedIn: store.login.loggedIn,
-    token: store.login.token
+    token: store.login.token,
+    init: store.login.init
   }));
 
   useEffect(() => {
-    dispatch(LoginInit());
+    dispatch(loginInit()).then((res) => console.log(res));
   }, [dispatch]);
 
+  useEffect(() => {
+    const timeout = setTimeout(() => setShowLogging(true), 500);
+    return (): void => clearTimeout(timeout);
+  }, []);
+
   const { register, handleSubmit } = useForm();
+
+  if (loading && init) {
+    return showLogging && <Heading>Trying to log you in with existing token</Heading>;
+  }
 
   if (loggedIn && token) {
     const { from } = (location.state as any) || {

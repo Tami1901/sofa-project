@@ -9,11 +9,12 @@ export const LoginStart = (username: string): t.IUserLoginStart => {
   };
 };
 
-export const LoginSuccess = (token: string): t.IUserLoginSuccess => {
+export const LoginSuccess = (token: string, user: t.User): t.IUserLoginSuccess => {
   return {
     type: t.LOGIN_SUCCESS,
     payload: {
-      token
+      token,
+      user
     }
   };
 };
@@ -34,9 +35,7 @@ export const LogoutAction = (): t.IUserLogout => {
 };
 
 export const LoginInit = (): t.IUserLoginInit => {
-  const token = localStorage.getItem("token");
-
-  // TODO: Check if token is correct
-
-  return { type: t.LOGIN_INIT, payload: { token, isLoggedIn: !!token } };
+  return {
+    type: t.LOGIN_INIT
+  };
 };

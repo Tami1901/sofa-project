@@ -67,13 +67,13 @@ const League: React.FC = () => {
 
   return (
     <Stack p={3} w="90%" m="0 auto" spacing={4}>
-      <Flex justifyContent="space-between">
+      <Flex justifyContent="space-between" flexDir={{ base: "column", md: "row" }}>
         <Flex align="flex-end">
           <Heading className="title">
             {loading ? "Loading..." : error || !league ? "Error..." : league.name}
           </Heading>
         </Flex>
-        <Stack spacing={4} isInline>
+        <Stack spacing={4} isInline mt={{ base: 4, md: 0 }}>
           <Button leftIcon="delete" variantColor="red" onClick={onDelete}>
             Delete
           </Button>

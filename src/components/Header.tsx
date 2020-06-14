@@ -43,113 +43,60 @@ const Header: React.FC = () => {
     history.push("/");
   };
 
-  if (loggedIn) {
-    return (
-      <Flex
-        as="nav"
-        align="center"
-        justify="space-between"
-        wrap="wrap"
-        padding="1.5rem"
-        bg="teal.500"
-        color="white"
-      >
-        <Flex justify="space-between" w="100%">
-          <Flex align="center" mr={5}>
-            <Heading as="h1" size="lg">
-              Chakra UI
-            </Heading>
-          </Flex>
-
-          <Box display={{ sm: "block", md: "none" }} onClick={toggle}>
-            <svg fill="white" width="12px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <title>Menu</title>
-              <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
-            </svg>
-          </Box>
-        </Flex>
-
-        <Flex
-          flexDir="column"
-          height={show ? "unset" : "0"}
-          overflow="hidden"
-          style={{ animationDuration: "0.3s" }}
-        >
-          <Box
-            display={{ sm: show ? "block" : "none", md: "flex" }}
-            width={{ sm: "full", md: "auto" }}
-            alignItems="center"
-            flexGrow={1}
-          >
-            <MenuItems>Docs</MenuItems>
-            <MenuItems>Examples</MenuItems>
-            <MenuItems>Blog</MenuItems>
-          </Box>
-
-          <Box display={{ sm: show ? "block" : "none", md: "block" }} mt={{ base: 4, md: 0 }}>
-            <Button bg="transparent" border="1px">
-              Create account
-            </Button>
-          </Box>
-        </Flex>
-      </Flex>
-    );
-
-    return (
-      <Flex
-        as="nav"
-        align="center"
-        justify="space-between"
-        wrap="wrap"
-        padding="0.75rem"
-        bg="rgb(248, 136, 61)"
-        color="white"
-      >
-        <Flex align="center" mr={5}>
-          <Link to="/">
-            <Heading as="h1" size="lg">
-              TENNIS LEAGUE
-            </Heading>
-          </Link>
-        </Flex>
-
-        <Box display={display("block", "none", true)} onClick={toggle}>
-          <svg fill="white" width="12px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-            <title>Menu</title>
-            <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
-          </svg>
-        </Box>
-
-        <br />
-
-        <Box
-          display={display("flex", "flex", show)}
-          width={{ sm: "full", md: "auto" }}
-          alignItems="center"
-          flexGrow={1}
-        >
-          <MenuItems>Docs</MenuItems>
-          <MenuItems>Examples</MenuItems>
-          <MenuItems>Blog</MenuItems>
-        </Box>
-
-        <Stack
-          display={display("flex", "flex", show)}
-          mt={{ base: 4, md: 0 }}
-          isInline
-          align="center"
-          spacing={3}
-        >
-          <Button onClick={logout} variantColor="white" variant="outline">
-            Logout
-          </Button>
-          <Avatar name={username} onClick={(): void => history.push("/user")} cursor="pointer" />
-        </Stack>
-      </Flex>
-    );
+  if (!loggedIn) {
+    return null;
   }
 
-  return null;
+  return (
+    <Flex
+      as="nav"
+      align="center"
+      justify="space-between"
+      wrap="wrap"
+      padding="0.75rem"
+      bg="rgb(248, 136, 61)"
+      color="white"
+    >
+      <Flex align="center" mr={5}>
+        <Link to="/">
+          <Heading as="h1" size="lg">
+            TENNIS LEAGUE
+          </Heading>
+        </Link>
+      </Flex>
+
+      <Box display={{ sm: "block", md: "none" }} onClick={toggle}>
+        <svg fill="white" width="12px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+          <title>Menu</title>
+          <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
+        </svg>
+      </Box>
+
+      <Box
+        display={display("flex", "flex", show)}
+        width={{ sm: "full", md: "auto" }}
+        alignItems="center"
+        flexGrow={1}
+      >
+        <MenuItems>Docs</MenuItems>
+        <MenuItems>Examples</MenuItems>
+        <MenuItems>Blog</MenuItems>
+      </Box>
+
+      <Stack
+        display={display("flex", "flex", show)}
+        mt={{ base: 4, md: 0 }}
+        isInline
+        align="center"
+        spacing={3}
+      >
+        <Button onClick={logout} variantColor="white" variant="outline">
+          Logout
+        </Button>
+        <Avatar name={username} onClick={(): void => history.push("/user")} cursor="pointer" />
+      </Stack>
+    </Flex>
+  );
 };
 
 export default Header;

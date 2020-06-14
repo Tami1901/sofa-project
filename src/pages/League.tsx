@@ -20,7 +20,7 @@ const League: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchLeague(token, id, !!league));
-  }, []);
+  }, [dispatch, token, id, league]);
 
   return (
     <Stack p={3}>

@@ -71,7 +71,7 @@ const Login: React.FC = () => {
 
   useEffect(() => {
     dispatch(LoginInit());
-  }, []);
+  }, [dispatch]);
 
   const { register, handleSubmit } = useForm();
 

@@ -47,7 +47,7 @@ const Home: React.FC = () => {
     if (token && loggedIn) {
       history.push("/leagues");
     }
-  }, []);
+  }, [token, loggedIn, history]);
 
   return (
     <Container>

@@ -24,7 +24,7 @@ const EventNew: React.FC = () => {
         console.log(ok);
       });
     }
-  }, [leagueName]);
+  }, [leagueName, dispatch, id, token]);
 
   const onSubmit = (data): void => {
     dispatch(createEvent(token, id, data)).then((ok) => {

@@ -30,8 +30,8 @@ const LeagueForm: React.FC<LeagueFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Stack spacing={4}>
-        <FormControl isReadOnly={loading}>
+      <FormControl isReadOnly={loading}>
+        <Stack spacing={2}>
           <InputGroup>
             <InputLeftAddon children="Name" minWidth="80px" />
             <Input
@@ -67,12 +67,12 @@ const LeagueForm: React.FC<LeagueFormProps> = ({
               ref={register}
             />
           </InputGroup>
-        </FormControl>
-        <Button type="submit" isLoading={loading}>
-          {buttonText}
-        </Button>
-        {error && <Text color="red.600">{error}</Text>}
-      </Stack>
+          {error && <Text color="red.600">{error}</Text>}
+          <Button type="submit" isLoading={loading} mt={2}>
+            {buttonText}
+          </Button>
+        </Stack>
+      </FormControl>
     </form>
   );
 };

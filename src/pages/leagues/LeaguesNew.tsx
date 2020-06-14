@@ -7,7 +7,6 @@ import useThunkDispatch from "../../hooks/useThunkDispatch";
 import { createLeague } from "../../reducers/leagues";
 import { AppStoreState } from "../../lib/reducer";
 import LeagueForm from "../../components/LeagueForm";
-import Link from "../../components/Link";
 
 export interface NewLeagueData {
   name: string;
@@ -32,7 +31,6 @@ const LeaguesNew: React.FC = () => {
   return (
     <Stack p={3} w="90%" m="0 auto" spacing={4}>
       <Heading>New League</Heading>
-      <Link to="/leagues">Leagues</Link>
       <LeagueForm onSubmit={onSubmit} error={error} loading={loading} buttonText="Create" />
     </Stack>
   );

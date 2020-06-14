@@ -6,8 +6,7 @@ import {
   Redirect,
   RouteProps,
   useLocation,
-  useHistory,
-  Link
+  useHistory
 } from "react-router-dom";
 import {
   ThemeProvider,
@@ -37,6 +36,7 @@ import { LogoutAction } from "./reducers/login";
 import User from "./pages/User";
 import LeagueEdit from "./pages/LeaguesEdit";
 import EventEdit from "./pages/EventEdit";
+import Link from "./components/Link";
 
 const PrivateRoute: React.FC<RouteProps> = (props) => {
   const location = useLocation();
@@ -86,9 +86,11 @@ const Header: React.FC = () => {
         color="white"
       >
         <Flex align="center" mr={5}>
-          <Heading as="h1" size="lg">
-            TENNIS LEAGUE
-          </Heading>
+          <Link to="/">
+            <Heading as="h1" size="lg">
+              TENNIS LEAGUE
+            </Heading>
+          </Link>
         </Flex>
         <Stack isInline align="center" spacing={3}>
           <Flex align="end">

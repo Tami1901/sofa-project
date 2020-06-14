@@ -1,10 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Text, Image, Button } from "@chakra-ui/core";
+import { Text, Image, Button, Box, Heading } from "@chakra-ui/core";
 import { useSelector } from "react-redux";
 import styled from "@emotion/styled";
 
 import { AppStoreState } from "../lib/reducer";
+import useThunkDispatch from "../hooks/useThunkDispatch";
+import { loginInit } from "../reducers/login";
 
 const Container = styled.div`
   position: relative;
@@ -35,19 +37,35 @@ const Container = styled.div`
 `;
 
 const Home: React.FC = () => {
-  const { token, loggedIn } = useSelector((store: AppStoreState) => ({
-    // useSelector se koristi za uzimanje podataka iz stora
-    loggedIn: store.login.loggedIn, // uzme jel logiran i username
-    token: store.login.token
+  const dispatch = useThunkDispatch();
+  const [showLogging, setShowLogging] = useState<boolean>(false);
+  const { loggedIn, init } = useSelector((store: AppStoreState) => ({
+    loggedIn: store.login.loggedIn,
+    init: store.login.init
   }));
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setShowLogging(true), 500);
+    return (): void => clearTimeout(timeout);
+  }, []);
 
   const history = useHistory();
 
   useEffect(() => {
-    if (token && loggedIn) {
-      history.push("/leagues");
-    }
-  }, [token, loggedIn, history]);
+    dispatch(loginInit()).then((res) => console.log(res));
+  }, []);
+
+  if (loggedIn) {
+    return (
+      <Box m={1}>
+        <Heading>HomePage</Heading>
+      </Box>
+    );
+  }
+
+  if (!showLogging && init) {
+    return <Heading>Logging you in</Heading>;
+  }
 
   return (
     <Container>

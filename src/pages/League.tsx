@@ -12,31 +12,33 @@ import {
   FormControl,
   Input,
   Flex,
-  Box,
-  Image
+  Box
 } from "@chakra-ui/core";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useHistory } from "react-router-dom";
 
 import useThunkDispatch from "../hooks/useThunkDispatch";
 import { AppStoreState } from "../lib/reducer";
-import { fetchLeague, updateEvent, deleteLeague } from "../reducers/leagues";
+import { fetchLeague, deleteLeague, updateEvent } from "../reducers/leagues";
 
 const League: React.FC = () => {
   const { id } = useParams();
+  const history = useHistory();
 
   const [addId, setAddId] = useState<string | undefined>();
   const [value, setValue] = useState<string | undefined>();
 
   const dispatch = useThunkDispatch();
-  const { loading, error, league, token, scoreState } = useSelector((store: AppStoreState) => ({
-    loading: store.leagues.loading,
-    error: store.leagues.error,
-    league: store.leagues.leagues.find((l) => l.id === id) || undefined,
-    token: store.login.token,
-    scoreState: store.leagues.addScore
-  }));
+  const { loading, error, league, token, updateEventStore } = useSelector(
+    (store: AppStoreState) => ({
+      loading: store.leagues.loading,
+      error: store.leagues.error,
+      league: store.leagues.leagues.find((l) => l.id === id) || undefined,
+      token: store.login.token,
+      updateEventStore: store.leagues.updateEvent
+    })
+  );
 
-  const { loading: scoreLoading, error: scoreError } = scoreState;
+  const { loading: scoreLoading, error: scoreError } = updateEventStore;
 
   useEffect(() => {
     dispatch(fetchLeague(token, id, !!league));
@@ -50,11 +52,18 @@ const League: React.FC = () => {
   const onSubmit = (eventId: string) => (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     setAddId(undefined);
-    dispatch(addScoreToEvent(token, id, eventId, value)).then(() => console.log("Hello"));
+    dispatch(updateEvent(token, id, eventId, { score: value })).then(() => console.log("Hello"));
     setValue("");
   };
 
-  console.log(scoreError);
+  const onDelete = (): void => {
+    // eslint-disable-next-line no-alert
+    if (window.confirm("Are you sure?")) {
+      dispatch(deleteLeague(token, id)).then(() => {
+        history.push(`/leagues`);
+      });
+    }
+  };
 
   return (
     <Stack p={3}>
@@ -66,7 +75,9 @@ const League: React.FC = () => {
         </Flex>
         <Flex align="center" justify="center">
           <Stack spacing={4} isInline>
-            <ChakraLink onClick={remove(league.id)}>Delete</ChakraLink>
+            <Button color="red.600" onClick={onDelete}>
+              Delete
+            </Button>
             <Flex align="end">
               <Link to="/leagues">
                 <Button>Leagues</Button>

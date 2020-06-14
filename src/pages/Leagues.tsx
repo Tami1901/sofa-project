@@ -2,8 +2,6 @@ import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
   Stack,
-  List,
-  ListItem,
   Heading,
   Spinner,
   Text,
@@ -13,13 +11,18 @@ import {
   Grid,
   Flex
 } from "@chakra-ui/core";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 import useThunkDispatch from "../hooks/useThunkDispatch";
 import { AppStoreState } from "../lib/reducer";
 import { fetchLeagues, deleteLeague } from "../reducers/leagues";
 
-function Feature({ title, place, type, ...rest }) {
+const Feature: React.FC<{ title: string; place: string; type: string }> = ({
+  title,
+  place,
+  type,
+  ...rest
+}) => {
   return (
     <Box p={5} shadow="md" borderWidth="1px" {...rest}>
       <Heading fontSize="xl">{title}</Heading>
@@ -27,9 +30,11 @@ function Feature({ title, place, type, ...rest }) {
       <Text mt={4}>Type: {type}</Text>
     </Box>
   );
-}
+};
 
 const Leagues: React.FC = () => {
+  const history = useHistory();
+
   const dispatch = useThunkDispatch();
   const { loading, error, leagues, token } = useSelector((store: AppStoreState) => ({
     loading: store.leagues.loading,

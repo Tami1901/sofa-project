@@ -1,7 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router";
 import { useSelector } from "react-redux";
-import { Flex, Heading, Text, Button, Box, Avatar, Stack } from "@chakra-ui/core";
+import { Flex, Heading, Text, Button, Box, Avatar, Stack, useColorMode } from "@chakra-ui/core";
 import useThunkDispatch from "../hooks/useThunkDispatch";
 import { AppStoreState } from "../lib/reducer";
 import { LogoutAction } from "../reducers/login";
@@ -27,6 +27,8 @@ const display = (sm: string, md: string, show: boolean): { [k in Foo]: string } 
 
 const Header: React.FC = () => {
   const [show, toggle] = useToggle();
+
+  const { colorMode, toggleColorMode } = useColorMode();
 
   const history = useHistory();
   const dispatch = useThunkDispatch();
@@ -93,6 +95,9 @@ const Header: React.FC = () => {
           <Button onClick={logout} variantColor="white" variant="outline">
             Logout
           </Button>
+          {/* <Button onClick={toggleColorMode}>
+            Toggle {colorMode === "light" ? "Dark" : "Light"}
+          </Button> */}
           <Avatar name={username} onClick={(): void => history.push("/user")} cursor="pointer" />
         </Stack>
       </Stack>

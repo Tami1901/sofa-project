@@ -7,6 +7,10 @@ export const LOGIN_FAIL = "LOGIN_FAIL";
 export const LOGIN_INIT = "LOGIN_INIT";
 export const LOGOUT = "LOGOUT";
 
+export const REGISTER_LOADING = "REGISTER_LOADING";
+export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
+export const REGISTER_FAIL = "REGISTER_FAIL";
+
 export interface User {
   id: string;
   username: string;
@@ -21,6 +25,10 @@ export interface UserStore {
   error?: string;
   loggedIn: boolean;
   user?: User;
+  register: {
+    loading: boolean;
+    error: string;
+  };
 }
 
 export interface IUserLoginStart {
@@ -49,6 +57,21 @@ export interface IUserLoginInit {
   type: typeof LOGIN_INIT;
 }
 
+export interface IUserRegisterLoading {
+  type: typeof REGISTER_LOADING;
+}
+
+export interface IUserRegisterSuccess {
+  type: typeof REGISTER_SUCCESS;
+}
+
+export interface IUserRegisterFail {
+  type: typeof REGISTER_FAIL;
+  payload: {
+    error: string;
+  };
+}
+
 export interface IUserLogout {
   type: typeof LOGOUT;
 }
@@ -58,5 +81,8 @@ export type IUserLogin =
   | IUserLoginSuccess
   | IUserLoginFail
   | IUserLoginInit
-  | IUserLogout;
+  | IUserLogout
+  | IUserRegisterLoading
+  | IUserRegisterSuccess
+  | IUserRegisterFail;
 export type ThunkResult<R> = ThunkAction<R, AppStoreState, null, IUserLogin>;

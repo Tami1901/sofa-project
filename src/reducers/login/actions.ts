@@ -72,4 +72,27 @@ const loginInit: ActionCreator<t.ThunkResult<Promise<boolean>>> = () => async (
   }
 };
 
-export { loginAction, loginInit };
+const registerUser: ActionCreator<t.ThunkResult<Promise<boolean>>> = (data) => async (
+  dispatch
+): Promise<boolean> => {
+  dispatch(a.RegisterLoading());
+
+  try {
+    const { res, json } = await api.post<{ id: string }>(`/register`, data, true);
+
+    if (!res.ok) {
+      throw new Error((json as any).error);
+    }
+
+    await dispatch(loginAction(data.username, data.password, true));
+    dispatch(a.RegisterSuccess());
+
+    return true;
+  } catch (error) {
+    dispatch(a.RegisterFail(error.message));
+  }
+
+  return false;
+};
+
+export { loginAction, loginInit, registerUser };

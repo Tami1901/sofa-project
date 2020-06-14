@@ -39,3 +39,24 @@ export const LoginInit = (): t.IUserLoginInit => {
     type: t.LOGIN_INIT
   };
 };
+
+export const RegisterLoading = (): t.IUserRegisterLoading => {
+  return {
+    type: t.REGISTER_LOADING
+  };
+};
+
+export const RegisterSuccess = (): t.IUserRegisterSuccess => {
+  return {
+    type: t.REGISTER_SUCCESS
+  };
+};
+
+export const RegisterFail = (error: string): t.IUserRegisterFail => {
+  return {
+    type: t.REGISTER_FAIL,
+    payload: {
+      error
+    }
+  };
+};

@@ -1,6 +1,11 @@
 import * as t from "./types";
 
-const initState: t.UserStore = { loading: false, loggedIn: false, init: false };
+const initState: t.UserStore = {
+  loading: false,
+  loggedIn: false,
+  init: false,
+  register: { loading: false, error: "" }
+};
 
 const reducer = (state = initState, action: t.IUserLogin): t.UserStore => {
   switch (action.type) {
@@ -41,6 +46,33 @@ const reducer = (state = initState, action: t.IUserLogin): t.UserStore => {
         loggedIn: false,
         token: undefined
       };
+    case t.REGISTER_LOADING: {
+      return {
+        ...state,
+        register: {
+          loading: true,
+          error: ""
+        }
+      };
+    }
+    case t.REGISTER_SUCCESS: {
+      return {
+        ...state,
+        register: {
+          error: "",
+          loading: false
+        }
+      };
+    }
+    case t.REGISTER_FAIL: {
+      return {
+        ...state,
+        register: {
+          loading: false,
+          error: action.payload.error
+        }
+      };
+    }
     default:
       return state;
   }

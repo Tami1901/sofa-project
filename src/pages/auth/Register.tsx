@@ -1,6 +1,6 @@
-import React, { useReducer } from "react";
+import React, { useState } from "react";
 import styled from "@emotion/styled";
-
+import { useForm } from "react-hook-form";
 import {
   Input,
   Button,
@@ -9,9 +9,17 @@ import {
   InputGroup,
   Icon,
   InputRightElement,
-  Text
+  Text,
+  FormControl
 } from "@chakra-ui/core";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router";
+
 import Link from "../../components/Link";
+import useToggle from "../../hooks/useToggle";
+import useThunkDispatch from "../../hooks/useThunkDispatch";
+import { AppStoreState } from "../../lib/reducer";
+import { registerUser } from "../../reducers/login";
 
 const Container = styled.div`
   background-color: rgb(248, 136, 61);
@@ -52,93 +60,37 @@ const Container = styled.div`
   }
 `;
 
-type Field = "username" | "email" | "password" | "confirmPassword";
-
-interface IState {
-  username: string;
-  email: string;
-  password: string;
-  showPassword: boolean;
-  confirmPassword: string;
-  showConfirmPassword: boolean;
-  errors: Record<Field, string | undefined>;
-}
-
-const defaultErrors = {
-  email: undefined,
-  password: undefined,
-  confirmPassword: undefined,
-  username: undefined
-};
-
-const initState: IState = {
-  email: "foo@bar.com",
-  password: "foobar",
-  showPassword: false,
-  confirmPassword: "foo",
-  showConfirmPassword: false,
-  username: "foobar",
-  errors: { ...defaultErrors }
-};
-
-type IAction =
-  | { type: "error"; payload: { field: Field; message: string } }
-  | { type: "clearError" }
-  | { type: Field; payload: string }
-  | { type: "togglePassword" | "toggleConfirmPassword" };
-
-const reducer = (state: IState, action: IAction): IState => {
-  switch (action.type) {
-    case "email":
-      return { ...state, email: action.payload };
-    case "username":
-      return { ...state, username: action.payload };
-    case "password":
-      return { ...state, password: action.payload };
-    case "confirmPassword":
-      return { ...state, confirmPassword: action.payload };
-    case "togglePassword":
-      return { ...state, showPassword: !state.showPassword };
-    case "toggleConfirmPassword":
-      return { ...state, showConfirmPassword: !state.showConfirmPassword };
-    case "error":
-      return {
-        ...state,
-        errors: { ...state.errors, [action.payload.field]: action.payload.message }
-      };
-    case "clearError":
-      return {
-        ...state,
-        errors: { ...defaultErrors }
-      };
-    default:
-      return state;
-  }
-};
-
 const Register: React.FC = () => {
-  const [state, dispatch] = useReducer(reducer, initState);
+  const history = useHistory();
+  const [showPassword, togglePassword] = useToggle();
+  const [showConfirmPassword, toggleConfirmPassword] = useToggle();
+  const { handleSubmit, register } = useForm();
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
-    event.preventDefault();
-    const { password, confirmPassword } = state;
+  const [errors, setErrors] = useState<Record<string, string | undefined>>({});
 
-    dispatch({ type: "clearError" });
+  const { loading, error } = useSelector((store: AppStoreState) => ({
+    loading: store.login.register.loading,
+    error: store.login.register.error
+  }));
+  const dispatch = useThunkDispatch();
 
-    if (password.length < 6) {
-      dispatch({ type: "error", payload: { field: "password", message: "Password too short" } });
+  const onSubmit = (data): void => {
+    if (data.password.length < 6) {
+      setErrors({ password: "Too short" });
       return;
     }
 
-    if (password !== confirmPassword) {
-      dispatch({
-        type: "error",
-        payload: { field: "confirmPassword", message: "Passwords don't match" }
-      });
+    if (data.password !== data.confirmPassword) {
+      setErrors({ confirmPassword: "No match" });
+      return;
     }
-  };
 
-  console.log(state);
+    dispatch(registerUser(data)).then((ok) => {
+      if (ok) {
+        history.push("/leagues");
+      }
+    });
+  };
 
   return (
     <Container>
@@ -149,84 +101,72 @@ const Register: React.FC = () => {
           </Text>
           {/* {JSON.stringify(state)} */}
           <br />
-          <form onSubmit={onSubmit}>
-            <Stack spacing={4}>
-              <InputGroup>
-                <InputLeftElement children={<Icon name="email" color="gray.300" />} />
-                <Input
-                  type="email"
-                  placeholder="email"
-                  className="input"
-                  value={state.email}
-                  onChange={(e): void => dispatch({ type: "email", payload: e.target.value })}
-                  isRequired
-                  isInvalid={!!state.errors.email}
-                />
-              </InputGroup>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            {error && <Text>{error}</Text>}
+            <FormControl isReadOnly={loading}>
+              <Stack spacing={4}>
+                <InputGroup>
+                  <InputLeftElement children={<Icon name="email" color="gray.300" />} />
+                  <Input type="email" placeholder="email" name="email" ref={register} isRequired />
+                </InputGroup>
 
-              <InputGroup>
-                <InputLeftElement children={<Icon name="check" color="gray.300" />} />
-                <Input
-                  type="phone"
-                  placeholder="Username"
-                  value={state.username}
-                  onChange={(e): void => dispatch({ type: "username", payload: e.target.value })}
-                  isRequired
-                  isInvalid={!!state.errors.username}
-                />
-              </InputGroup>
-              <InputGroup size="md">
-                <InputLeftElement children={<Icon name="lock" color="gray.300" />} />
-                <Input
-                  pr="4.5rem"
-                  type={state.showPassword ? "text" : "password"}
-                  placeholder="Enter password"
-                  className="input"
-                  value={state.password}
-                  onChange={(e): void => dispatch({ type: "password", payload: e.target.value })}
-                  isRequired
-                  isInvalid={!!state.errors.password}
-                />
-                <InputRightElement width="4.5rem">
-                  <Button
-                    h="1.75rem"
-                    size="sm"
-                    onClick={(): void => dispatch({ type: "togglePassword" })}
-                  >
-                    {state.showPassword ? "Hide" : "Show"}
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
-              {state.errors.password && <Text>{state.errors.password}</Text>}
-              <InputGroup size="md">
-                <InputLeftElement children={<Icon name="lock" color="gray.300" />} />
-                <Input
-                  pr="4.5rem"
-                  type={state.showConfirmPassword ? "text" : "password"}
-                  placeholder="Confirm password"
-                  className="input"
-                  value={state.confirmPassword}
-                  onChange={(e): void =>
-                    dispatch({ type: "confirmPassword", payload: e.target.value })
-                  }
-                  isRequired
-                  isInvalid={!!state.errors.confirmPassword}
-                />
-                <InputRightElement width="4.5rem">
-                  <Button
-                    h="1.75rem"
-                    size="sm"
-                    onClick={(): void => dispatch({ type: "toggleConfirmPassword" })}
-                  >
-                    {state.showConfirmPassword ? "Hide" : "Show"}
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
-              {state.errors.confirmPassword && <Text>{state.errors.confirmPassword}</Text>}
-            </Stack>
+                <InputGroup>
+                  <InputLeftElement children={<Icon name="check" color="gray.300" />} />
+                  <Input
+                    type="text"
+                    placeholder="Username"
+                    name="username"
+                    ref={register}
+                    isRequired
+                  />
+                </InputGroup>
+                <InputGroup size="md">
+                  <InputLeftElement children={<Icon name="lock" color="gray.300" />} />
+                  <Input
+                    pr="4.5rem"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter password"
+                    name="password"
+                    ref={register}
+                    isRequired
+                    isInvalid={!!errors.password}
+                  />
+                  <InputRightElement width="4.5rem">
+                    <Button h="1.75rem" size="sm" onClick={togglePassword}>
+                      {showPassword ? "Hide" : "Show"}
+                    </Button>
+                  </InputRightElement>
+                </InputGroup>
+                {errors.password && <Text>{errors.password}</Text>}
+                <InputGroup size="md">
+                  <InputLeftElement children={<Icon name="lock" color="gray.300" />} />
+                  <Input
+                    pr="4.5rem"
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Confirm password"
+                    name="confirmPassword"
+                    ref={register}
+                    isRequired
+                    isInvalid={!!errors.confirmPassword}
+                  />
+                  <InputRightElement width="4.5rem">
+                    <Button h="1.75rem" size="sm" onClick={toggleConfirmPassword}>
+                      {showConfirmPassword ? "Hide" : "Show"}
+                    </Button>
+                  </InputRightElement>
+                </InputGroup>
+                {errors.confirmPassword && <Text>{errors.confirmPassword}</Text>}
+              </Stack>
+            </FormControl>
 
             <div className="login">
-              <Button variantColor="green" size="lg" className="loginbutton" type="submit">
+              <Button
+                variantColor="green"
+                size="lg"
+                className="loginbutton"
+                type="submit"
+                isLoading={loading}
+              >
                 Register
               </Button>
             </div>

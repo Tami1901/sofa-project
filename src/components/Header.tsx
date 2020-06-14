@@ -54,7 +54,7 @@ const Header: React.FC = () => {
       justify="space-evenly"
       wrap="wrap"
       padding="0.75rem"
-      bg="rgb(248, 136, 61)"
+      bg="orange.400"
       color="white"
     >
       <Flex align="center" mr={5}>
@@ -90,7 +90,7 @@ const Header: React.FC = () => {
         align="center"
         spacing={3}
       >
-        <Button onClick={logout} variantColor="green" variant="solid">
+        <Button onClick={logout} variantColor="white" variant="outline">
           Logout
         </Button>
         <Avatar name={username} onClick={(): void => history.push("/user")} cursor="pointer" />

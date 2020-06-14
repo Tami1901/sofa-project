@@ -7,7 +7,6 @@ import useThunkDispatch from "../../hooks/useThunkDispatch";
 import { AppStoreState } from "../../lib/reducer";
 import { fetchLeague, updateEvent } from "../../reducers/leagues";
 import EventForm from "../../components/EventForm";
-import Link from "../../components/Link";
 
 const EventEdit: React.FC = () => {
   const { id, eventId } = useParams();
@@ -40,11 +39,10 @@ const EventEdit: React.FC = () => {
   };
 
   return (
-    <Stack p={3}>
+    <Stack p={3} w="90%" m="0 auto" spacing={4}>
       <Heading>
         {loading ? "Loading..." : error || !event ? "Error..." : `Edit: ${event.name}`}
       </Heading>
-      <Link to={`/leagues/${id}`}>League</Link>
       <EventForm
         onSubmit={onSubmit}
         error={updateError[id]}

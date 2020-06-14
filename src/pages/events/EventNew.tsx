@@ -38,11 +38,8 @@ const EventNew: React.FC = () => {
   };
 
   return (
-    <Stack p={3}>
+    <Stack p={3} w="90%" m="0 auto" spacing={4}>
       <Heading>Add new Event {leagueName && `to: ${leagueName}`}</Heading>
-      <Stack spacing={3} isInline>
-        <Link to={`/leagues/${id}`}>Back to League</Link>
-      </Stack>
       <EventForm onSubmit={onSubmit} loading={loading} error={error} buttonText="Create" />
     </Stack>
   );

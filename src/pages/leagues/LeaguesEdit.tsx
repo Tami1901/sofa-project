@@ -38,11 +38,10 @@ const LeagueEdit: React.FC = () => {
   };
 
   return (
-    <Stack p={3}>
+    <Stack p={3} w="90%" m="0 auto" spacing={4}>
       <Heading>
         {loading ? "Loading..." : error || !league ? "Error..." : `Edit: ${league.name}`}
       </Heading>
-      <Link to={`/leagues/${id}`}>League</Link>
       <LeagueForm
         onSubmit={onSubmit}
         error={updateError[id]}

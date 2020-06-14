@@ -18,7 +18,7 @@ import { useParams, useHistory } from "react-router-dom";
 import useThunkDispatch from "../../hooks/useThunkDispatch";
 import { AppStoreState } from "../../lib/reducer";
 import { fetchLeague, deleteLeague, updateEvent } from "../../reducers/leagues";
-import Link from "../../components/Link";
+import Link, { LinkButton } from "../../components/Link";
 
 const League: React.FC = () => {
   const { id } = useParams();
@@ -66,28 +66,24 @@ const League: React.FC = () => {
   };
 
   return (
-    <Stack p={3}>
+    <Stack p={3} w="90%" m="0 auto" spacing={4}>
       <Flex justifyContent="space-between">
         <Flex align="flex-end">
           <Heading className="title">
             {loading ? "Loading..." : error || !league ? "Error..." : league.name}
           </Heading>
         </Flex>
-        <Flex align="center" justify="center">
-          <Stack spacing={4} isInline>
-            <Button color="red.600" onClick={onDelete}>
-              Delete
-            </Button>
-            <Flex align="end">
-              <Link to="/leagues">
-                <Button>Leagues</Button>
-              </Link>
-            </Flex>
-            <Link to={`/leagues/${id}/new-event`}>
-              <Button>Add new event</Button>
-            </Link>
-          </Stack>
-        </Flex>
+        <Stack spacing={4} isInline>
+          <Button leftIcon="delete" variantColor="red" onClick={onDelete}>
+            Delete
+          </Button>
+          <LinkButton leftIcon="edit" to={`/leagues/${id}/edit`} variantColor="green">
+            Edit
+          </LinkButton>
+          <LinkButton to={`/leagues/${id}/new-event`} variantColor="blue">
+            Add new event
+          </LinkButton>
+        </Stack>
       </Flex>
 
       <hr />

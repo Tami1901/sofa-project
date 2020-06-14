@@ -108,6 +108,7 @@ export const reducer = (store = initStore, action: t.ILeagueAction): t.LeaguesSt
     case t.ADD_EVENT_SUCCESS:
       return {
         ...store,
+        addEvent: { loading: false, error: "" },
         leagues: store.leagues.map((l) =>
           l.id === action.payload.leagueId
             ? { ...l, events: [...l.events, action.payload.event] }

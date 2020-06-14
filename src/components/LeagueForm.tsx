@@ -30,10 +30,10 @@ const LeagueForm: React.FC<LeagueFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Stack spacing={3}>
+      <Stack spacing={4}>
         <FormControl isReadOnly={loading}>
           <InputGroup>
-            <InputLeftAddon children="Name" />
+            <InputLeftAddon children="Name" minWidth="80px" />
             <Input
               type="text"
               isRequired
@@ -45,19 +45,19 @@ const LeagueForm: React.FC<LeagueFormProps> = ({
             />
           </InputGroup>
           <InputGroup>
-            <InputLeftAddon children="Place" />
+            <InputLeftAddon children="Place" minWidth="80px" />
             <Input
               type="text"
               isRequired
               roundedLeft="0"
-              placeholder=" Place name"
+              placeholder="Place name"
               name="place"
               defaultValue={initState.place}
               ref={register}
             />
           </InputGroup>
           <InputGroup>
-            <InputLeftAddon children="Type" />
+            <InputLeftAddon children="Type" minWidth="80px" />
             <Input
               type="text"
               roundedLeft="0"

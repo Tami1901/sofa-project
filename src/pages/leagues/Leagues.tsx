@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Stack, Heading, Spinner, Text, Grid, Flex, Button } from "@chakra-ui/core";
+import { Stack, Heading, Spinner, Text, Grid, Flex, Button, Divider } from "@chakra-ui/core";
 import { useHistory } from "react-router-dom";
 
 import useThunkDispatch from "../../hooks/useThunkDispatch";
@@ -72,19 +72,25 @@ const Leagues: React.FC = () => {
 
   return (
     <Stack p={3} w="90%" m="0 auto" spacing={4}>
-      <Flex justifyContent="space-between">
-        <Heading className="title">Leagues</Heading>
-        <LinkButton variantColor="blue" to="/leagues/new">
-          New League
-        </LinkButton>
+      <Flex justifyContent="space-between" flexDir={{ base: "column", md: "row" }}>
+        <Flex align="flex-end">
+          <Heading className="title">Leagues</Heading>
+        </Flex>
+        <Stack spacing={4} isInline mt={{ base: 4, md: 0 }}>
+          <LinkButton to="/leagues/new" variantColor="blue">
+            New League
+          </LinkButton>
+        </Stack>
       </Flex>
+
+      <Divider />
+
       {loading ? (
         <Spinner />
       ) : error ? (
         <Text>{error}</Text>
       ) : (
         <Grid
-          mt={6}
           templateColumns={{
             base: "repeat(auto-fit, minmax(300px, 1fr))",
             md: leagues?.length > 2 ? "repeat(auto-fit, minmax(300px, 1fr))" : "repeat(3, 1fr)"

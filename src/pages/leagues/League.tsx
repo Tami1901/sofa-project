@@ -10,7 +10,8 @@ import {
   Flex,
   Box,
   Grid,
-  Tag
+  Tag,
+  Divider
 } from "@chakra-ui/core";
 import { useParams, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -126,7 +127,11 @@ const League: React.FC = () => {
       <Flex justifyContent="space-between" flexDir={{ base: "column", md: "row" }}>
         <Flex align="flex-end">
           <Heading className="title">
-            {loading ? "Loading..." : error || !league ? "Error..." : league.name}
+            {loading
+              ? "Loading..."
+              : error || !league
+              ? "Error..."
+              : `${league.name}, ${league.place}`}
           </Heading>
         </Flex>
         <Stack spacing={4} isInline mt={{ base: 4, md: 0 }}>
@@ -142,17 +147,15 @@ const League: React.FC = () => {
         </Stack>
       </Flex>
 
-      <hr />
+      <Divider />
       {loading ? (
         <Spinner />
       ) : error ? (
         <Text>{error}</Text>
       ) : league ? (
         <Stack>
-          <Heading fontSize="lg">Place: {league.place}</Heading>
-          <Heading fontSize="lg">Events: </Heading>
+          <Heading fontSize="xl">Events: </Heading>
           <Grid
-            mt={6}
             templateColumns={{
               base: "repeat(auto-fit, minmax(300px, 1fr))",
               md:

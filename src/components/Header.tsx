@@ -52,7 +52,7 @@ const Header: React.FC = () => {
   return (
     <Flex
       as="nav"
-      align="center"
+      alignItems="center"
       justify="space-between"
       wrap="wrap"
       padding="0.75rem"
@@ -60,7 +60,12 @@ const Header: React.FC = () => {
       color="white"
       flexDir={{ base: "column", md: "row" }}
     >
-      <Stack justifyContent="space-between" w={{ base: "100%", md: "unset" }} isInline>
+      <Stack
+        justifyContent="space-between"
+        w={{ base: "100%", md: "unset" }}
+        isInline
+        align="center"
+      >
         <Link to="/">
           <Heading as="h1" size="lg">
             TENNIS LEAGUE

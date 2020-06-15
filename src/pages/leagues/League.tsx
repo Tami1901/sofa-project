@@ -1,116 +1,13 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import {
-  Stack,
-  Heading,
-  Spinner,
-  Text,
-  Button,
-  Input,
-  Flex,
-  Box,
-  Grid,
-  Tag,
-  Divider,
-  IconButton
-} from "@chakra-ui/core";
+import { Stack, Heading, Spinner, Text, Button, Flex, Grid, Divider } from "@chakra-ui/core";
 import { useParams, useHistory } from "react-router-dom";
-import { useForm } from "react-hook-form";
 
 import useThunkDispatch from "../../hooks/useThunkDispatch";
 import { AppStoreState } from "../../lib/reducer";
 import { fetchLeague, deleteLeague, updateEvent, deleteEvent } from "../../reducers/leagues";
-import { LinkButton, LinkIconButton } from "../../components/Link";
-import { IEvent } from "../../reducers/leagues/types";
-import useToggle from "../../hooks/useToggle";
-
-interface EventItemProps {
-  lId: string;
-  event: IEvent;
-  addScore: ({ score: string }) => Promise<boolean>;
-  remove: () => void;
-}
-
-const EventItem: React.FC<EventItemProps> = ({ lId, event, addScore, remove }) => {
-  const [add, toggle, setShow] = useToggle();
-  const { register, handleSubmit } = useForm();
-
-  const { updateEventStore, deleteEventStore } = useSelector((store: AppStoreState) => ({
-    updateEventStore: store.leagues.updateEvent,
-    deleteEventStore: store.leagues.removeEvent
-  }));
-
-  const { loading: updateLoading, error: updateError } = updateEventStore;
-  const { loading: deleteLoading, error: deleteError } = deleteEventStore;
-
-  const onSubmit = (data: { score: string }): void => {
-    addScore(data).then((ok) => {
-      if (ok) {
-        setShow(false);
-      }
-    });
-  };
-
-  return (
-    <Stack spacing={4} p={5} shadow="md" borderWidth="1px">
-      <Flex justify="space-between">
-        <Heading fontSize="xl">
-          {event.name}
-          {updateLoading.includes(event.id) ? (
-            <Spinner />
-          ) : Object.keys(updateError).includes(event.id) && updateError[event.id] ? (
-            <Text color="red.600">{updateError[event.id]}</Text>
-          ) : (
-            event.score !== undefined && `: ${event.score}`
-          )}
-        </Heading>
-        {Object.keys(deleteError).includes(event.id) && deleteError[event.id] && (
-          <Text color="red.600">{deleteError[event.id]}</Text>
-        )}
-        <Stack isInline>
-          {event.score === undefined && (
-            <IconButton
-              onClick={toggle}
-              variant="outline"
-              variantColor="orange"
-              icon={!add ? "view-off" : "view"}
-              aria-label={!add ? "Hide score" : "Show score"}
-            />
-          )}
-          <LinkIconButton
-            to={`/leagues/${lId}/event/${event.id}`}
-            variantColor="green"
-            variant="outline"
-            icon="edit"
-            aria-label="edit"
-          />
-          <IconButton
-            icon="delete"
-            aria-label="delete"
-            variantColor="red"
-            variant="outline"
-            onClick={remove}
-            isLoading={deleteLoading.includes(event.id)}
-          />
-        </Stack>
-      </Flex>
-      <Stack isInline>
-        <Tag>{event.a}</Tag>
-        <Tag>{event.b}</Tag>
-      </Stack>
-      {add && (
-        <Box>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Stack>
-              <Input type="text" name="score" isRequired ref={register} />
-              <Button type="submit">Add</Button>
-            </Stack>
-          </form>
-        </Box>
-      )}
-    </Stack>
-  );
-};
+import { LinkButton } from "../../components/Link";
+import EventCard from "../../components/EventCard";
 
 const League: React.FC = () => {
   const { id } = useParams();
@@ -159,7 +56,7 @@ const League: React.FC = () => {
               ? "Loading..."
               : error || !league
               ? "Error..."
-              : `${league.name}, ${league.place}`}
+              : `${league.name}, ${league.place}${league.type ? ` - ${league.type}` : ""}`}
           </Heading>
         </Flex>
         <Stack spacing={4} isInline mt={{ base: 4, md: 0 }}>
@@ -195,7 +92,7 @@ const League: React.FC = () => {
           >
             {league.events?.length ? (
               league.events.map((event) => (
-                <EventItem
+                <EventCard
                   key={event.id}
                   event={event}
                   lId={id}

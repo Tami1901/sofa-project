@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Text, Image, Button, Box, Heading } from "@chakra-ui/core";
+import { Text, Image, Button, Heading, Stack } from "@chakra-ui/core";
 import { useSelector } from "react-redux";
 import styled from "@emotion/styled";
 
 import { AppStoreState } from "../lib/reducer";
 import useThunkDispatch from "../hooks/useThunkDispatch";
 import { loginInit } from "../reducers/login";
+import Link from "../components/Link";
 
 const Container = styled.div`
   position: relative;
@@ -57,9 +58,12 @@ const Home: React.FC = () => {
 
   if (loggedIn) {
     return (
-      <Box m={1}>
-        <Heading>HomePage</Heading>
-      </Box>
+      <Stack p={3} w="90%" m="0 auto" spacing={4}>
+        <Heading className="title">Home</Heading>
+        <Link to="/leagues">
+          <Heading fontSize="lg">Leagues</Heading>
+        </Link>
+      </Stack>
     );
   }
 

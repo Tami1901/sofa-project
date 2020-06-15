@@ -41,7 +41,7 @@ const EventEdit: React.FC = () => {
   return (
     <Stack p={3} w="90%" m="0 auto" spacing={4}>
       <Heading>
-        {loading ? "Loading..." : error || !event ? "Error..." : `Edit: ${event.name}`}
+        {loading ? "Loading..." : error || !event ? "Error..." : `Edit Event: ${event.name}`}
       </Heading>
       <EventForm
         onSubmit={onSubmit}

@@ -39,7 +39,7 @@ const LeagueEdit: React.FC = () => {
   return (
     <Stack p={3} w="90%" m="0 auto" spacing={4}>
       <Heading>
-        {loading ? "Loading..." : error || !league ? "Error..." : `Edit: ${league.name}`}
+        {loading ? "Loading..." : error || !league ? "Error..." : `Edit League: ${league.name}`}
       </Heading>
       <LeagueForm
         onSubmit={onSubmit}

@@ -14,6 +14,7 @@ export interface EventFormData {
   name: string;
   a: string;
   b: string;
+  score?: string;
 }
 
 interface EventFormProps {
@@ -22,6 +23,7 @@ interface EventFormProps {
   error?: string;
   initState?: EventFormData;
   buttonText: string;
+  edit?: boolean;
 }
 
 const EventForm: React.FC<EventFormProps> = ({
@@ -29,7 +31,8 @@ const EventForm: React.FC<EventFormProps> = ({
   loading,
   error,
   initState = {},
-  buttonText
+  buttonText,
+  edit
 }) => {
   const { handleSubmit, register } = useForm();
 
@@ -70,6 +73,19 @@ const EventForm: React.FC<EventFormProps> = ({
               defaultValue={initState.b}
             />
           </InputGroup>
+          {edit && initState.score && (
+            <InputGroup>
+              <InputLeftAddon children="Score" minWidth="95px" />
+              <Input
+                type="text"
+                isRequired
+                placeholder="Score"
+                name="score"
+                ref={register}
+                defaultValue={initState.score}
+              />
+            </InputGroup>
+          )}
           {error && <Text color="red.600">{error}</Text>}
           <Button type="submit" isLoading={loading} mt={2}>
             {buttonText}

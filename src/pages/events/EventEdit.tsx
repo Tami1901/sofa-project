@@ -49,6 +49,7 @@ const EventEdit: React.FC = () => {
         loading={updateLoading.includes(id)}
         initState={event}
         buttonText="Update"
+        edit
       />
     </Stack>
   );

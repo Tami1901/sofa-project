@@ -29,6 +29,10 @@ export const UPDATE_EVENT_LOADING = "UPDATE_EVENT_LOADING";
 export const UPDATE_EVENT_SUCCESS = "UPDATE_EVENT_SUCCESS";
 export const UPDATE_EVENT_FAIL = "UPDATE_EVENT_FAIL";
 
+export const DELETE_EVENT_LOADING = "DELETE_EVENT_LOADING";
+export const DELETE_EVENT_SUCCESS = "DELETE_EVENT_SUCCESS";
+export const DELETE_EVENT_FAIL = "DELETE_EVENT_FAIL";
+
 export interface League {
   id: string;
   name: string;
@@ -65,8 +69,9 @@ export interface LeaguesStore {
   leagues: League[];
   update: UpdateMany;
   remove: UpdateMany;
-  updateEvent: UpdateMany;
   add: UpdateOne;
+  updateEvent: UpdateMany;
+  removeEvent: UpdateMany;
   addEvent: UpdateOne;
 }
 
@@ -214,6 +219,29 @@ export interface IUpdateEventFail {
   };
 }
 
+export interface IDeleteEventLoading {
+  type: typeof DELETE_EVENT_LOADING;
+  payload: {
+    id: string;
+  };
+}
+
+export interface IDeleteEventSuccess {
+  type: typeof DELETE_EVENT_SUCCESS;
+  payload: {
+    leagueId: string;
+    id: string;
+  };
+}
+
+export interface IDeleteEventFail {
+  type: typeof DELETE_EVENT_FAIL;
+  payload: {
+    id: string;
+    error: string;
+  };
+}
+
 export type ILeagueAction =
   | ILeaguesLoading
   | ILeaguesSuccess
@@ -235,4 +263,7 @@ export type ILeagueAction =
   | ILeagueUpdateFail
   | ILeagueDeleteLoading
   | ILeagueDeleteSuccess
-  | ILeagueDeleteFail;
+  | ILeagueDeleteFail
+  | IDeleteEventLoading
+  | IDeleteEventSuccess
+  | IDeleteEventFail;

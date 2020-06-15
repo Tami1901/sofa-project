@@ -5,10 +5,11 @@ const initStore: t.LeaguesStore = {
   error: "",
   leagues: [],
   add: { loading: false, error: "" },
+  update: { loading: [], error: {} },
+  remove: { loading: [], error: {} },
   addEvent: { loading: false, error: "" },
   updateEvent: { loading: [], error: {} },
-  update: { loading: [], error: {} },
-  remove: { loading: [], error: {} }
+  removeEvent: { loading: [], error: {} }
 };
 
 export const reducer = (store = initStore, action: t.ILeagueAction): t.LeaguesStore => {
@@ -128,22 +129,16 @@ export const reducer = (store = initStore, action: t.ILeagueAction): t.LeaguesSt
     case t.UPDATE_EVENT_SUCCESS:
       return {
         ...store,
-        leagues: store.leagues.map((l) => {
-          console.log(
-            (l.events || []).map((e) =>
-              e.id === action.payload.id ? { ...e, ...action.payload.data } : e
-            )
-          );
-
-          return l.id === action.payload.leagueId
+        leagues: store.leagues.map((l) =>
+          l.id === action.payload.leagueId
             ? {
                 ...l,
                 events: (l.events || []).map((e) =>
                   e.id === action.payload.id ? { ...e, ...action.payload.data } : e
                 )
               }
-            : l;
-        }),
+            : l
+        ),
         updateEvent: {
           loading: store.updateEvent.loading.filter((a) => a !== action.payload.id),
           error: { ...store.updateEvent.error, [action.payload.id]: undefined }
@@ -155,6 +150,38 @@ export const reducer = (store = initStore, action: t.ILeagueAction): t.LeaguesSt
         updateEvent: {
           loading: store.updateEvent.loading.filter((a) => a !== action.payload.id),
           error: { ...store.updateEvent.error, [action.payload.id]: action.payload.error }
+        }
+      };
+    case t.DELETE_EVENT_LOADING:
+      return {
+        ...store,
+        removeEvent: {
+          loading: [...store.removeEvent.loading, action.payload.id],
+          error: { ...store.removeEvent.error, [action.payload.id]: undefined }
+        }
+      };
+    case t.DELETE_EVENT_SUCCESS:
+      return {
+        ...store,
+        leagues: store.leagues.map((l) =>
+          l.id === action.payload.leagueId
+            ? {
+                ...l,
+                events: (l.events || []).filter((e) => e.id !== action.payload.id)
+              }
+            : l
+        ),
+        updateEvent: {
+          loading: store.updateEvent.loading.filter((a) => a !== action.payload.id),
+          error: { ...store.updateEvent.error, [action.payload.id]: undefined }
+        }
+      };
+    case t.DELETE_EVENT_FAIL:
+      return {
+        ...store,
+        removeEvent: {
+          loading: store.removeEvent.loading.filter((a) => a !== action.payload.id),
+          error: { ...store.removeEvent.error, [action.payload.id]: action.payload.error }
         }
       };
     default:

@@ -187,3 +187,32 @@ export const UpdateEventError = (id: string, error: string): t.IUpdateEventFail 
     }
   };
 };
+
+export const DeleteEventLoading = (id: string): t.IDeleteEventLoading => {
+  return {
+    type: t.DELETE_EVENT_LOADING,
+    payload: {
+      id
+    }
+  };
+};
+
+export const DeleteEventSuccess = (id: string, leagueId: string): t.IDeleteEventSuccess => {
+  return {
+    type: t.DELETE_EVENT_SUCCESS,
+    payload: {
+      leagueId,
+      id
+    }
+  };
+};
+
+export const DeleteEventError = (id: string, error: string): t.IDeleteEventFail => {
+  return {
+    type: t.DELETE_EVENT_FAIL,
+    payload: {
+      id,
+      error
+    }
+  };
+};

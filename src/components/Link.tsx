@@ -4,7 +4,9 @@ import {
   Link as ChakraLink,
   Button,
   ButtonProps,
-  LinkProps as ChakraLinkProps
+  LinkProps as ChakraLinkProps,
+  IconButton,
+  IconButtonProps
 } from "@chakra-ui/core";
 
 type LinkProps = RouterLinkProps & ChakraLinkProps;
@@ -19,5 +21,14 @@ const LinkButton: React.FC<LinkButtonProps> = React.forwardRef((props: LinkButto
   return <Button as={RouterLink} {...props} />;
 });
 
+type LinkIconButtonProps = RouterLinkProps &
+  IconButtonProps & { as?: React.ElementType | RouterLink };
+
+const LinkIconButton: React.FC<LinkIconButtonProps> = React.forwardRef(
+  (props: LinkIconButtonProps) => {
+    return <IconButton as={RouterLink} {...props} />;
+  }
+);
+
 export default Link;
-export { LinkButton };
+export { LinkButton, LinkIconButton };

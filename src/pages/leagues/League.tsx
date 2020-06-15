@@ -11,15 +11,16 @@ import {
   Box,
   Grid,
   Tag,
-  Divider
+  Divider,
+  IconButton
 } from "@chakra-ui/core";
 import { useParams, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 import useThunkDispatch from "../../hooks/useThunkDispatch";
 import { AppStoreState } from "../../lib/reducer";
-import { fetchLeague, deleteLeague, updateEvent } from "../../reducers/leagues";
-import { LinkButton } from "../../components/Link";
+import { fetchLeague, deleteLeague, updateEvent, deleteEvent } from "../../reducers/leagues";
+import { LinkButton, LinkIconButton } from "../../components/Link";
 import { IEvent } from "../../reducers/leagues/types";
 import useToggle from "../../hooks/useToggle";
 
@@ -27,13 +28,20 @@ interface EventItemProps {
   lId: string;
   event: IEvent;
   addScore: ({ score: string }) => Promise<boolean>;
-  loading: string[];
-  error: Record<string, string>;
+  remove: () => void;
 }
 
-const EventItem: React.FC<EventItemProps> = ({ lId, event, addScore, loading, error }) => {
+const EventItem: React.FC<EventItemProps> = ({ lId, event, addScore, remove }) => {
   const [add, toggle, setShow] = useToggle();
   const { register, handleSubmit } = useForm();
+
+  const { updateEventStore, deleteEventStore } = useSelector((store: AppStoreState) => ({
+    updateEventStore: store.leagues.updateEvent,
+    deleteEventStore: store.leagues.removeEvent
+  }));
+
+  const { loading: updateLoading, error: updateError } = updateEventStore;
+  const { loading: deleteLoading, error: deleteError } = deleteEventStore;
 
   const onSubmit = (data: { score: string }): void => {
     addScore(data).then((ok) => {
@@ -45,16 +53,47 @@ const EventItem: React.FC<EventItemProps> = ({ lId, event, addScore, loading, er
 
   return (
     <Stack spacing={4} p={5} shadow="md" borderWidth="1px">
-      <Heading fontSize="xl">
-        {event.name}
-        {loading.includes(event.id) ? (
-          <Spinner />
-        ) : Object.keys(error).includes(event.id) && error[event.id] ? (
-          <Text color="red.600">{error[event.id]}</Text>
-        ) : (
-          event.score !== undefined && `: ${event.score}`
+      <Flex justify="space-between">
+        <Heading fontSize="xl">
+          {event.name}
+          {updateLoading.includes(event.id) ? (
+            <Spinner />
+          ) : Object.keys(updateError).includes(event.id) && updateError[event.id] ? (
+            <Text color="red.600">{updateError[event.id]}</Text>
+          ) : (
+            event.score !== undefined && `: ${event.score}`
+          )}
+        </Heading>
+        {Object.keys(deleteError).includes(event.id) && deleteError[event.id] && (
+          <Text color="red.600">{deleteError[event.id]}</Text>
         )}
-      </Heading>
+        <Stack isInline>
+          {event.score === undefined && (
+            <IconButton
+              onClick={toggle}
+              variant="outline"
+              variantColor="orange"
+              icon={!add ? "view-off" : "view"}
+              aria-label={!add ? "Hide score" : "Show score"}
+            />
+          )}
+          <LinkIconButton
+            to={`/leagues/${lId}/event/${event.id}`}
+            variantColor="green"
+            variant="outline"
+            icon="edit"
+            aria-label="edit"
+          />
+          <IconButton
+            icon="delete"
+            aria-label="delete"
+            variantColor="red"
+            variant="outline"
+            onClick={remove}
+            isLoading={deleteLoading.includes(event.id)}
+          />
+        </Stack>
+      </Flex>
       <Stack isInline>
         <Tag>{event.a}</Tag>
         <Tag>{event.b}</Tag>
@@ -69,21 +108,6 @@ const EventItem: React.FC<EventItemProps> = ({ lId, event, addScore, loading, er
           </form>
         </Box>
       )}
-      <Stack isInline justify="space-between">
-        <LinkButton
-          leftIcon="edit"
-          w="100%"
-          to={`/leagues/${lId}/event/${event.id}`}
-          variantColor="green"
-          variant="outline"
-          mr={2}
-        >
-          Edit
-        </LinkButton>
-        {event.score === undefined && (
-          <Button onClick={toggle}>{add ? "Hide score" : "Show score"}</Button>
-        )}
-      </Stack>
     </Stack>
   );
 };
@@ -93,17 +117,12 @@ const League: React.FC = () => {
   const history = useHistory();
 
   const dispatch = useThunkDispatch();
-  const { loading, error, league, token, updateEventStore } = useSelector(
-    (store: AppStoreState) => ({
-      loading: store.leagues.loading,
-      error: store.leagues.error,
-      league: store.leagues.leagues.find((l) => l.id === id) || undefined,
-      token: store.login.token,
-      updateEventStore: store.leagues.updateEvent
-    })
-  );
-
-  const { loading: scoreLoading, error: scoreError } = updateEventStore;
+  const { loading, error, league, token } = useSelector((store: AppStoreState) => ({
+    loading: store.leagues.loading,
+    error: store.leagues.error,
+    league: store.leagues.leagues.find((l) => l.id === id) || undefined,
+    token: store.login.token
+  }));
 
   useEffect(() => {
     dispatch(fetchLeague(token, id, !!league));
@@ -118,6 +137,15 @@ const League: React.FC = () => {
     if (window.confirm("Are you sure?")) {
       dispatch(deleteLeague(token, id)).then(() => {
         history.push(`/leagues`);
+      });
+    }
+  };
+
+  const removeEvent = (eventId: string) => (): void => {
+    // eslint-disable-next-line no-alert
+    if (window.confirm("Are you sure?")) {
+      dispatch(deleteEvent(token, id, eventId)).then(() => {
+        console.log("done");
       });
     }
   };
@@ -172,8 +200,7 @@ const League: React.FC = () => {
                   event={event}
                   lId={id}
                   addScore={addScore(event.id)}
-                  loading={scoreLoading}
-                  error={scoreError}
+                  remove={removeEvent(event.id)}
                 />
               ))
             ) : (

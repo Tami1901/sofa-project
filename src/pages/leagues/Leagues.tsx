@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Stack, Heading, Spinner, Text, Grid, Flex, Button, Divider } from "@chakra-ui/core";
+import { Stack, Heading, Spinner, Text, Grid, Flex, Divider, IconButton } from "@chakra-ui/core";
 import { useHistory } from "react-router-dom";
 
 import useThunkDispatch from "../../hooks/useThunkDispatch";
 import { AppStoreState } from "../../lib/reducer";
 import { fetchLeagues, deleteLeague } from "../../reducers/leagues";
-import Link, { LinkButton } from "../../components/Link";
+import Link, { LinkButton, LinkIconButton } from "../../components/Link";
 import { League } from "../../reducers/leagues/types";
 
 const Feature: React.FC<{
@@ -15,33 +15,29 @@ const Feature: React.FC<{
 }> = ({ league, remove }) => {
   return (
     <Stack spacing={4} p={5} shadow="md" borderWidth="1px">
-      <Link to={`/leagues/${league.id}`}>
-        <Heading fontSize="xl">{league.name}</Heading>
-      </Link>
+      <Flex justify="space-between">
+        <Link to={`/leagues/${league.id}`}>
+          <Heading fontSize="xl">{league.name}</Heading>
+        </Link>
+        <Stack isInline>
+          <LinkIconButton
+            to={`/leagues/${league.id}/edit`}
+            variantColor="green"
+            variant="outline"
+            icon="edit"
+            aria-label="edit"
+          />
+          <IconButton
+            icon="delete"
+            aria-label="delete"
+            variantColor="red"
+            variant="outline"
+            onClick={remove(league.id)}
+          />
+        </Stack>
+      </Flex>
       <Text>Place: {league.place}</Text>
       <Text>Type: {league.type}</Text>
-      <Flex justify="space-between">
-        <LinkButton
-          leftIcon="edit"
-          w="100%"
-          to={`/leagues/${league.id}/edit`}
-          variantColor="green"
-          variant="outline"
-          mr={2}
-        >
-          Edit
-        </LinkButton>
-        <Button
-          leftIcon="delete"
-          w="100%"
-          onClick={remove(league.id)}
-          variantColor="red"
-          variant="outline"
-          ml={2}
-        >
-          Delete
-        </Button>
-      </Flex>
     </Stack>
   );
 };

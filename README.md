@@ -41,6 +41,7 @@ EVENT
 - [x] **User can see event details**
 - [x] **User can add events score**
 - [x] _User can modify event_
+- [x] CUSTOM -> User can delete event
 - [ ] _User can modify event with admin rights_
 - [ ] _User can add other users as event participants_
 - [ ] _User can add detailed event scores (by period, game, ...)_

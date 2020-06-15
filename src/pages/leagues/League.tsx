@@ -1,31 +1,97 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
   Stack,
   Heading,
   Spinner,
   Text,
-  List,
-  ListItem,
   Button,
-  FormControl,
   Input,
   Flex,
-  Box
+  Box,
+  Grid,
+  Tag
 } from "@chakra-ui/core";
 import { useParams, useHistory } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 import useThunkDispatch from "../../hooks/useThunkDispatch";
 import { AppStoreState } from "../../lib/reducer";
 import { fetchLeague, deleteLeague, updateEvent } from "../../reducers/leagues";
-import Link, { LinkButton } from "../../components/Link";
+import { LinkButton } from "../../components/Link";
+import { IEvent } from "../../reducers/leagues/types";
+import useToggle from "../../hooks/useToggle";
+
+interface EventItemProps {
+  lId: string;
+  event: IEvent;
+  addScore: ({ score: string }) => Promise<boolean>;
+  loading: string[];
+  error: Record<string, string>;
+}
+
+const EventItem: React.FC<EventItemProps> = ({ lId, event, addScore, loading, error }) => {
+  const [add, toggle, setShow] = useToggle();
+  const { register, handleSubmit } = useForm();
+
+  const onSubmit = (data: { score: string }): void => {
+    addScore(data).then((ok) => {
+      if (ok) {
+        setShow(false);
+      }
+    });
+  };
+
+  console.log(error);
+
+  return (
+    <Stack spacing={4} p={5} shadow="md" borderWidth="1px">
+      <Heading fontSize="xl">
+        {event.name}
+        {loading.includes(event.id) ? (
+          <Spinner />
+        ) : Object.keys(error).includes(event.id) && error[event.id] ? (
+          <Text color="red.600">{error[event.id]}</Text>
+        ) : (
+          event.score !== undefined && `: ${event.score}`
+        )}
+      </Heading>
+      <Stack isInline>
+        <Tag>{event.a}</Tag>
+        <Tag>{event.b}</Tag>
+      </Stack>
+      {add && (
+        <Box>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Stack>
+              <Input type="text" name="score" isRequired ref={register} />
+              <Button type="submit">Add</Button>
+            </Stack>
+          </form>
+        </Box>
+      )}
+      <Stack isInline justify="space-between">
+        <LinkButton
+          leftIcon="edit"
+          w="100%"
+          to={`/leagues/${lId}/event/${event.id}`}
+          variantColor="green"
+          variant="outline"
+          mr={2}
+        >
+          Edit
+        </LinkButton>
+        {event.score === undefined && (
+          <Button onClick={toggle}>{add ? "Hide score" : "Show score"}</Button>
+        )}
+      </Stack>
+    </Stack>
+  );
+};
 
 const League: React.FC = () => {
   const { id } = useParams();
   const history = useHistory();
-
-  const [addId, setAddId] = useState<string | undefined>();
-  const [value, setValue] = useState<string | undefined>();
 
   const dispatch = useThunkDispatch();
   const { loading, error, league, token, updateEventStore } = useSelector(
@@ -44,16 +110,8 @@ const League: React.FC = () => {
     dispatch(fetchLeague(token, id, !!league));
   }, [dispatch]);
 
-  const addScore = (eventId: string) => (): void => {
-    setAddId(eventId === addId ? undefined : eventId);
-    setValue("");
-  };
-
-  const onSubmit = (eventId: string) => (e: React.FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
-    setAddId(undefined);
-    dispatch(updateEvent(token, id, eventId, { score: value })).then(() => console.log("Hello"));
-    setValue("");
+  const addScore = (eventId: string) => (data: { score: string }): Promise<boolean> => {
+    return dispatch(updateEvent(token, id, eventId, data));
   };
 
   const onDelete = (): void => {
@@ -93,47 +151,34 @@ const League: React.FC = () => {
         <Text>{error}</Text>
       ) : league ? (
         <Stack>
-          <Text fontSize="30px" textDecoration="underline rgb(248, 136, 61)">
-            Place: {league.place}
-          </Text>
-          <List listStyleType="'🎾 '">
-            {league.events?.map((event) => (
-              <ListItem>
-                <Link to={`/leagues/${id}/event/${event.id}`}>Edit</Link>
-                <Flex>
-                  <Box bg="#FBD38D" marginBottom="2" width="40%" borderRadius="5px">
-                    {event.name} [{event.a} : {event.b}] ={">"} ({event.score})
-                  </Box>
-                  <Box>
-                    {scoreLoading.includes(event.id) ? (
-                      <Spinner />
-                    ) : Object.keys(scoreError).includes(event.id) ? (
-                      <Text color="red.600">{scoreError[event.id]}</Text>
-                    ) : (
-                      event.score === undefined && (
-                        <>
-                          <Button onClick={addScore(event.id)}>
-                            {event.id === addId ? "Hide score" : "Show score"}
-                          </Button>
-                          {event.id === addId && (
-                            <form onSubmit={onSubmit(event.id)}>
-                              <FormControl>
-                                <Input
-                                  onChange={(e): void => setValue(e.target.value)}
-                                  value={value}
-                                />
-                              </FormControl>
-                              <Button type="submit">Add</Button>
-                            </form>
-                          )}
-                        </>
-                      )
-                    )}
-                  </Box>
-                </Flex>
-              </ListItem>
-            ))}
-          </List>
+          <Heading fontSize="lg">Place: {league.place}</Heading>
+          <Heading fontSize="lg">Events: </Heading>
+          <Grid
+            mt={6}
+            templateColumns={{
+              base: "repeat(auto-fit, minmax(300px, 1fr))",
+              md:
+                league.events?.length > 2
+                  ? "repeat(auto-fit, minmax(300px, 1fr))"
+                  : "repeat(3, 1fr)"
+            }}
+            gap={6}
+          >
+            {league.events?.length ? (
+              league.events.map((event) => (
+                <EventItem
+                  key={event.id}
+                  event={event}
+                  lId={id}
+                  addScore={addScore(event.id)}
+                  loading={scoreLoading}
+                  error={scoreError}
+                />
+              ))
+            ) : (
+              <Heading fontSize="lg">No events</Heading>
+            )}
+          </Grid>
         </Stack>
       ) : (
         <Text color="red.600">Can&apos;t find league</Text>

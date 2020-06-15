@@ -92,7 +92,7 @@ const Header: React.FC = () => {
           align="center"
           spacing={3}
         >
-          <Button onClick={logout} variantColor="white" variant="outline">
+          <Button onClick={logout} variant="outline">
             Logout
           </Button>
           {/* <Button onClick={toggleColorMode}>

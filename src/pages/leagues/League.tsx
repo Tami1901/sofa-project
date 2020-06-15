@@ -42,8 +42,6 @@ const EventItem: React.FC<EventItemProps> = ({ lId, event, addScore, loading, er
     });
   };
 
-  console.log(error);
-
   return (
     <Stack spacing={4} p={5} shadow="md" borderWidth="1px">
       <Heading fontSize="xl">

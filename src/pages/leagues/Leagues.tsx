@@ -58,8 +58,7 @@ const Leagues: React.FC = () => {
   }));
 
   useEffect(() => {
-    // dispatch(fetchLeagues(token, leagues.length === 0));
-    dispatch(fetchLeagues(token, true));
+    dispatch(fetchLeagues(token, leagues.length === 0));
   }, [dispatch]);
 
   const remove = (id: string) => (): void => {
@@ -84,9 +83,16 @@ const Leagues: React.FC = () => {
       ) : error ? (
         <Text>{error}</Text>
       ) : (
-        <Grid templateColumns="repeat(auto-fit, minmax(300px, 1fr))" gap={6}>
+        <Grid
+          mt={6}
+          templateColumns={{
+            base: "repeat(auto-fit, minmax(300px, 1fr))",
+            md: leagues?.length > 2 ? "repeat(auto-fit, minmax(300px, 1fr))" : "repeat(3, 1fr)"
+          }}
+          gap={6}
+        >
           {leagues.map((league) => (
-            <Feature remove={remove} league={league} />
+            <Feature key={league.id} remove={remove} league={league} />
           ))}
         </Grid>
       )}

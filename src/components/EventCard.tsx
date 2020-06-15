@@ -51,7 +51,7 @@ const EventCard: React.FC<EventCardProps> = ({ lId, event, addScore, remove }) =
         <Heading fontSize="xl">
           {event.name}
           {updateLoading.includes(event.id) ? (
-            <Spinner />
+            <Spinner ml={4} />
           ) : Object.keys(updateError).includes(event.id) && updateError[event.id] ? (
             <Text color="red.600">{updateError[event.id]}</Text>
           ) : (
